@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>비숑 PDF 도구</title>
+<title>비숑 PDF 도구 | 간편한 문서 작업</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,54 +17,63 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
 <style>
-:root{--pink:#e85d75;--darkpink:#d94762;--softpink:#fff0f3}
-*{box-sizing:border-box}
+:root{--accent:#e85d75;--accent-dark:#d94762;--soft:#fff0f3}
 body{font-family:"Noto Sans KR",sans-serif;background:#fffafb;color:#292b33;font-size:17px;line-height:1.65}
-button,input,select,textarea{font:inherit}
-button{cursor:pointer}
 .text-xs{font-size:.875rem!important;line-height:1.55!important}
 .text-sm{font-size:1rem!important;line-height:1.65!important}
-.tool-card{display:flex;flex-direction:column;align-items:flex-start;gap:.8rem;padding:1.5rem;text-align:left;border:1px solid #f4e3e7;border-radius:24px;background:#fff;min-height:220px;box-shadow:0 5px 18px #44202a08;transition:transform .18s,box-shadow .18s,border-color .18s;width:100%}
+.tool-card-title{font-size:1.2rem}
+.tool-card-desc{font-size:1rem;line-height:1.7;color:#686d7a}
+.tool-card-arrow{font-size:.98rem}
+.dropzone .block.font-bold{font-size:1.1rem}
+button,select,input,textarea{font-family:inherit}
+@media(max-width:640px){body{font-size:16px}.tool-card{min-height:175px;padding:1.2rem}.tool-card-title{font-size:1.12rem}.tool-card-desc{font-size:.96rem}}
+.tool-card{display:flex;flex-direction:column;align-items:flex-start;gap:.8rem;padding:1.35rem;text-align:left;border:1px solid #f4e3e7;border-radius:22px;background:#fff;min-height:190px;box-shadow:0 5px 18px #44202a06;transition:transform .18s,box-shadow .18s,border-color .18s;width:100%}
 .tool-card:hover{transform:translateY(-3px);border-color:#f0b7c2;box-shadow:0 12px 26px #e85d7518}
-.tool-card-icon{width:60px;height:60px;border-radius:19px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;background:#fff0f3;color:#d94762}
-.tool-card-title{font-weight:800;font-size:1.2rem;color:#292b33}
-.tool-card-desc{font-size:1rem;line-height:1.75;color:#686d7a}
-.tool-card-arrow{margin-top:auto;color:#d94762;font-size:1rem;font-weight:750}
+.tool-card-icon{width:54px;height:54px;border-radius:17px;display:flex;align-items:center;justify-content:center;font-size:1.45rem;background:#fff0f3;color:#d94762}
+.tool-card-title{font-weight:800;font-size:1.05rem;color:#292b33}
+.tool-card-desc{font-size:.86rem;line-height:1.55;color:#777b88}
+.tool-card-arrow{margin-top:auto;color:#d94762;font-size:.85rem;font-weight:750}
 #tool-view{display:none}#tool-view.show{display:block}
-.dropzone{position:relative;border:2px dashed #f0b7c2;background:#fff;border-radius:22px;padding:2.7rem 1rem;text-align:center;transition:.2s}
-.dropzone:hover{border-color:var(--pink);background:#fffafb}
+.dropzone{position:relative;border:2px dashed #f0b7c2;background:#fff;border-radius:22px;padding:2.6rem 1rem;text-align:center;transition:.2s}
+.dropzone:hover{border-color:var(--accent);background:#fffafb}
 .dropzone input[type=file]{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer}
-.primary{background:var(--pink);color:white;border-radius:12px;padding:.8rem 1.15rem;font-weight:750;transition:.2s}
-.primary:hover{background:var(--darkpink)}
-.primary:disabled{opacity:.6;cursor:wait}
-.secondary{background:#f4f4f6;color:#454752;border-radius:12px;padding:.8rem 1rem;font-weight:700}
+.primary{background:var(--accent);color:white;border-radius:12px;padding:.72rem 1.1rem;font-weight:700;transition:.2s}
+.primary:hover{background:var(--accent-dark)}
+.secondary{background:#f4f4f6;color:#454752;border-radius:12px;padding:.72rem 1rem;font-weight:650}
 .secondary:hover{background:#e9e9ed}
-.tool-panel{display:none}.tool-panel.active{display:block}
+.back-home-button{background:#fff0f3!important;color:#d94762!important;border:1px solid #f4c5cf;font-weight:800}
+.back-home-button:hover{background:#ffe2e9!important;color:#c73552!important}
+.tool-panel{display:none}
+.tool-panel.active{display:block}
 .preview-card{background:#fff;border:1px solid #eee4e7;border-radius:16px;padding:12px;box-shadow:0 4px 15px #44202a08}
 .file-tile{cursor:grab;user-select:none}
-.status{display:none;margin-top:1rem;padding:1rem;border-radius:12px;background:#fff0f3;color:#9f3047;font-size:1rem}
+.status{display:none;margin-top:1rem;padding:.8rem 1rem;border-radius:12px;background:#fff0f3;color:#9f3047;font-size:.9rem}
 .status.show{display:block}
-select,textarea{max-width:100%}
-@media(max-width:640px){
- body{font-size:16px}
- .tool-card{min-height:185px;padding:1.2rem}
- .tool-card-title{font-size:1.12rem}
- .tool-card-desc{font-size:.96rem}
- .dropzone{padding:2rem 1rem}
-}
+@media(max-width:767px){.dropzone{padding:2rem 1rem}}
+footer{margin-top:1rem}
+.back-home-button{display:inline-flex;align-items:center;gap:.35rem}
+.back-home-button .bichon-mini{width:23px;height:23px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;border-radius:50%;background:#ffe7ed;border:1.5px solid #d94762;padding:1px}
+.back-home-button .bichon-mini svg{width:100%;height:100%;display:block}
+.creator-signature{color:#b66b7d!important;font-weight:700;letter-spacing:.02em}
+.creator-bichon{width:32px;height:32px;display:inline-flex;align-items:center;justify-content:center;border-radius:50%;background:#fff0f3;border:2px solid #d94762;box-shadow:0 0 0 2px #fff,0 0 0 3px #f2c4ce;padding:1px;flex-shrink:0}
+.creator-bichon svg{width:100%;height:100%;display:block}
 </style>
 </head>
 <body class="min-h-screen">
-
 <header class="bg-white border-b border-pink-100">
   <div class="max-w-6xl mx-auto px-4 py-5 flex items-center gap-4">
     <div class="w-14 h-14 rounded-2xl bg-pink-50 flex items-center justify-center shrink-0">
-      <svg viewBox="0 0 100 100" class="w-12 h-12" aria-label="비숑 마스코트">
-        <path d="M50 10c-8 0-13 5-17 8-10-2-19 6-20 16-7 6-8 16-4 23-3 10 2 20 10 24 4 9 14 12 23 9 5 5 15 5 20 0 9 3 19 0 23-9 8-4 13-14 10-24 4-7 3-17-4-23-1-10-10-18-20-16-4-3-9-8-17-8z" fill="#fff" stroke="#333" stroke-width="3" stroke-linejoin="round"/>
-        <circle cx="36" cy="47" r="4.5" fill="#333"/><circle cx="64" cy="47" r="4.5" fill="#333"/>
-        <ellipse cx="28" cy="56" rx="6" ry="4" fill="#ffb6c5"/><ellipse cx="72" cy="56" rx="6" ry="4" fill="#ffb6c5"/>
-        <path d="M46 54q4-5 8 0q-1 5-4 5t-4-5z" fill="#333"/>
-        <path d="M50 59v4m0 0q-5 4-9-1m9 1q5 4 9-1" fill="none" stroke="#333" stroke-width="2.5" stroke-linecap="round"/>
+      <svg viewBox="0 0 100 100" class="w-12 h-12" role="img" aria-label="복슬복슬한 비숑 프리제">
+        <g fill="#fff" stroke="#e8dfe2" stroke-width="1.7">
+          <circle cx="50" cy="19" r="12"/><circle cx="34" cy="22" r="12"/><circle cx="66" cy="22" r="12"/>
+          <circle cx="23" cy="34" r="12"/><circle cx="77" cy="34" r="12"/><circle cx="18" cy="49" r="11"/><circle cx="82" cy="49" r="11"/>
+          <circle cx="23" cy="64" r="12"/><circle cx="77" cy="64" r="12"/><circle cx="35" cy="77" r="12"/><circle cx="65" cy="77" r="12"/><circle cx="50" cy="81" r="12"/>
+          <circle cx="35" cy="37" r="13"/><circle cx="65" cy="37" r="13"/><circle cx="50" cy="32" r="14"/><circle cx="33" cy="52" r="14"/><circle cx="67" cy="52" r="14"/><circle cx="50" cy="56" r="22"/>
+        </g>
+        <ellipse cx="37" cy="48" rx="3.6" ry="4.5" fill="#34313a"/><ellipse cx="63" cy="48" rx="3.6" ry="4.5" fill="#34313a"/>
+        <ellipse cx="27" cy="58" rx="5" ry="3.5" fill="#ffbdcb"/><ellipse cx="73" cy="58" rx="5" ry="3.5" fill="#ffbdcb"/>
+        <path d="M45 57q5-6 10 0q-1 6-5 6t-5-6z" fill="#34313a"/><path d="M50 63v4m0 0q-5 4-9-1m9 1q5 4 9-1" fill="none" stroke="#34313a" stroke-width="2.2" stroke-linecap="round"/>
+        <path d="M62 17l7-8 2 9 8 3-8 4-2 8-5-7-8-1 6-4z" fill="#ff9db3" stroke="#e85d75" stroke-width="1.2"/>
       </svg>
     </div>
     <div>
@@ -73,399 +82,404 @@ select,textarea{max-width:100%}
     </div>
   </div>
 </header>
-
 <main class="max-w-6xl mx-auto px-4 py-9 sm:py-12">
-<section id="home-panel">
-  <div class="text-center max-w-2xl mx-auto mb-9 sm:mb-11">
-    <div class="inline-flex items-center gap-2 rounded-full bg-white border border-pink-100 px-4 py-2 text-sm font-bold text-pink-600 shadow-sm mb-5">🐾 작고 귀여운 PDF 도우미</div>
-    <h2 class="text-3xl sm:text-4xl font-extrabold leading-tight tracking-tight">PDF 작업, <span class="text-pink-500">비숑이 도와줄게요!</span></h2>
-    <p class="text-slate-500 mt-3 text-sm sm:text-base">필요한 기능을 골라보세요. 파일은 내 기기에서 처리돼요.</p>
-  </div>
-
-  <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
-    <button type="button" class="tool-card" data-mode="pdf-to-img">
-      <span class="tool-card-icon"><i class="fa-regular fa-images"></i></span>
-      <span class="tool-card-title">PDF를 이미지로</span>
-      <span class="tool-card-desc">PDF 페이지를 JPG 또는 PNG 이미지로 바꾸고 한 번에 내려받아요.</span>
-      <span class="tool-card-arrow">기능 열기 →</span>
-    </button>
-    <button type="button" class="tool-card" data-mode="img-to-pdf">
-      <span class="tool-card-icon" style="background:#eef8ff;color:#3887c9"><i class="fa-regular fa-file-pdf"></i></span>
-      <span class="tool-card-title">이미지를 PDF로</span>
-      <span class="tool-card-desc">여러 이미지를 원하는 순서로 정리해 하나의 PDF로 만들어요.</span>
-      <span class="tool-card-arrow">기능 열기 →</span>
-    </button>
-    <button type="button" class="tool-card" data-mode="pdf-merge">
-      <span class="tool-card-icon" style="background:#f1edff;color:#7960c8"><i class="fa-solid fa-layer-group"></i></span>
-      <span class="tool-card-title">PDF 합치기</span>
-      <span class="tool-card-desc">여러 PDF 파일을 원하는 순서대로 하나로 합쳐요.</span>
-      <span class="tool-card-arrow">기능 열기 →</span>
-    </button>
-    <button type="button" class="tool-card" data-mode="pdf-edit">
-      <span class="tool-card-icon" style="background:#fff5e8;color:#c98429"><i class="fa-solid fa-scissors"></i></span>
-      <span class="tool-card-title">페이지 편집</span>
-      <span class="tool-card-desc">페이지를 미리 보고 필요 없는 페이지를 지우거나 순서를 바꿔요.</span>
-      <span class="tool-card-arrow">기능 열기 →</span>
-    </button>
-    <button type="button" class="tool-card" data-mode="pdf-split">
-      <span class="tool-card-icon" style="background:#eaf8f0;color:#329667"><i class="fa-solid fa-file-circle-minus"></i></span>
-      <span class="tool-card-title">PDF 나누기</span>
-      <span class="tool-card-desc">페이지 범위를 지정해 여러 개의 PDF로 나누고 ZIP으로 받아요.</span>
-      <span class="tool-card-arrow">기능 열기 →</span>
-    </button>
-
-    <div class="rounded-3xl border border-dashed border-pink-200 bg-white/70 p-6 flex flex-col justify-center min-h-[190px]">
-      <div class="w-16 h-16 mb-3 rounded-2xl bg-pink-50 flex items-center justify-center">
-        <svg viewBox="0 0 100 100" class="w-14 h-14" role="img" aria-label="귀여운 비숑 프리제">
-          <path d="M50 10c-8 0-13 5-17 8-10-2-19 6-20 16-7 6-8 16-4 23-3 10 2 20 10 24 4 9 14 12 23 9 5 5 15 5 20 0 9 3 19 0 23-9 8-4 13-14 10-24 4-7 3-17-4-23-1-10-10-18-20-16-4-3-9-8-17-8z" fill="#fff" stroke="#333" stroke-width="3" stroke-linejoin="round"/>
-          <circle cx="36" cy="47" r="4.5" fill="#333"/><circle cx="64" cy="47" r="4.5" fill="#333"/>
-          <ellipse cx="28" cy="56" rx="6" ry="4" fill="#ffb6c5"/><ellipse cx="72" cy="56" rx="6" ry="4" fill="#ffb6c5"/>
-          <path d="M46 54q4-5 8 0q-1 5-4 5t-4-5z" fill="#333"/>
-          <path d="M50 59v4m0 0q-5 4-9-1m9 1q5 4 9-1" fill="none" stroke="#333" stroke-width="2.5" stroke-linecap="round"/>
-          <path d="M25 25q-5 5-3 10m53-10q5 5 3 10" fill="none" stroke="#f1d9e0" stroke-width="4" stroke-linecap="round"/>
-        </svg>
-      </div>
-      <p class="font-extrabold text-slate-700 text-lg">간단하게, 안전하게</p>
-      <p class="text-sm text-slate-500 mt-2 leading-relaxed">파일을 서버로 보내지 않고 브라우저에서 처리해요. 작업이 끝나면 결과 파일을 내려받으세요.</p>
+  <section id="home-panel">
+    <div class="text-center max-w-2xl mx-auto mb-9 sm:mb-11">
+      <div class="inline-flex items-center gap-2 rounded-full bg-white border border-pink-100 px-4 py-2 text-sm font-bold text-pink-600 shadow-sm mb-5"><span>🐾</span> 작고 귀여운 PDF 도우미</div>
+      <h2 class="text-3xl sm:text-4xl font-extrabold leading-tight tracking-tight">PDF 작업, <span class="text-pink-500">비숑이 도와줄게요!</span></h2>
+      <p class="text-slate-500 mt-3 text-sm sm:text-base">필요한 기능을 골라보세요. 파일은 내 기기에서 처리돼요.</p>
     </div>
-  </div>
-  <p class="text-xs text-slate-400 mt-8 text-center">비숑 PDF 도구 · 파일은 브라우저에서 처리됩니다.</p>
-</section>
-
-<section id="tool-view">
-  <div class="flex flex-wrap items-center gap-3 mb-5">
-    <button id="back-home" type="button" class="secondary"><i class="fa-solid fa-arrow-left mr-2"></i>기능 목록</button>
-    <div><p class="text-xs font-bold text-pink-500">비숑 PDF 도구</p><h2 id="active-tool-title" class="text-xl sm:text-2xl font-extrabold mt-1">PDF 작업</h2></div>
-  </div>
-
-  <div class="space-y-5">
-    <section id="panel-pdf-to-img" class="tool-panel space-y-5">
-      <div class="bg-white rounded-2xl border border-pink-100 p-5 sm:p-7">
-        <h3 class="text-lg font-bold">PDF를 이미지로 변환</h3>
-        <p class="text-sm text-slate-500 mt-1 mb-5">PDF의 각 페이지를 JPG 또는 PNG 파일로 저장합니다.</p>
-        <label class="dropzone block">
-          <input id="pdf-image-input" type="file" accept="application/pdf,.pdf">
-          <span class="w-14 h-14 rounded-2xl bg-pink-50 text-pink-600 flex items-center justify-center text-2xl mx-auto"><i class="fa-solid fa-cloud-arrow-up"></i></span>
-          <span class="block font-bold mt-4">PDF 파일을 선택하세요</span>
-          <span class="block text-sm text-slate-400 mt-1">클릭하거나 파일을 끌어다 놓으세요</span>
-        </label>
-        <div id="pdf-image-info" class="hidden mt-4 p-4 bg-slate-50 rounded-xl text-sm"></div>
-        <div id="pdf-image-options" class="hidden mt-4 flex flex-wrap items-center gap-3">
-          <label class="text-sm font-semibold">형식 <select id="image-format" class="border rounded-lg p-2 ml-1"><option value="image/jpeg">JPG</option><option value="image/png">PNG</option></select></label>
-          <label class="text-sm font-semibold">화질 <select id="image-scale" class="border rounded-lg p-2 ml-1"><option value="1">기본</option><option value="1.5">선명</option><option value="2" selected>고화질</option><option value="3">최고화질</option></select></label>
-          <button id="convert-images" class="primary">이미지 변환 및 ZIP 다운로드</button>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+      <button type="button" class="tool-card" data-mode="pdf-to-img"><span class="tool-card-icon"><i class="fa-regular fa-images"></i></span><span class="tool-card-title">PDF를 이미지로</span><span class="tool-card-desc">PDF 페이지를 JPG 또는 PNG 이미지로 바꾸고 한 번에 내려받아요.</span><span class="tool-card-arrow">기능 열기 <i class="fa-solid fa-arrow-right ml-1"></i></span></button>
+      <button type="button" class="tool-card" data-mode="img-to-pdf"><span class="tool-card-icon" style="background:#eef8ff;color:#3887c9"><i class="fa-regular fa-file-pdf"></i></span><span class="tool-card-title">이미지를 PDF로</span><span class="tool-card-desc">여러 이미지를 원하는 순서로 정리해 하나의 PDF로 만들어요.</span><span class="tool-card-arrow">기능 열기 <i class="fa-solid fa-arrow-right ml-1"></i></span></button>
+      <button type="button" class="tool-card" data-mode="pdf-merge"><span class="tool-card-icon" style="background:#f1edff;color:#7960c8"><i class="fa-solid fa-layer-group"></i></span><span class="tool-card-title">PDF 합치기</span><span class="tool-card-desc">여러 PDF 파일을 원하는 순서대로 하나로 합쳐요.</span><span class="tool-card-arrow">기능 열기 <i class="fa-solid fa-arrow-right ml-1"></i></span></button>
+      <button type="button" class="tool-card" data-mode="pdf-edit"><span class="tool-card-icon" style="background:#fff5e8;color:#c98429"><i class="fa-solid fa-scissors"></i></span><span class="tool-card-title">페이지 편집</span><span class="tool-card-desc">페이지를 미리 보고 필요 없는 페이지를 지우거나 순서를 바꿔요.</span><span class="tool-card-arrow">기능 열기 <i class="fa-solid fa-arrow-right ml-1"></i></span></button>
+      <button type="button" class="tool-card" data-mode="pdf-split"><span class="tool-card-icon" style="background:#eaf8f0;color:#329667"><i class="fa-solid fa-file-circle-minus"></i></span><span class="tool-card-title">PDF 나누기</span><span class="tool-card-desc">페이지 범위를 지정해 여러 개의 PDF로 나누고 ZIP으로 받아요.</span><span class="tool-card-arrow">기능 열기 <i class="fa-solid fa-arrow-right ml-1"></i></span></button>
+      <div class="rounded-3xl border border-dashed border-pink-200 bg-white/70 p-6 flex flex-col justify-center min-h-[190px]"><div class="w-16 h-16 mb-3 rounded-2xl bg-pink-50 flex items-center justify-center">
+      <svg viewBox="0 0 100 100" class="w-14 h-14" role="img" aria-label="귀여운 비숑 프리제">
+        <g fill="#fff" stroke="#e8dfe2" stroke-width="1.7">
+          <circle cx="50" cy="19" r="12"/><circle cx="34" cy="22" r="12"/><circle cx="66" cy="22" r="12"/>
+          <circle cx="23" cy="34" r="12"/><circle cx="77" cy="34" r="12"/><circle cx="18" cy="49" r="11"/><circle cx="82" cy="49" r="11"/>
+          <circle cx="23" cy="64" r="12"/><circle cx="77" cy="64" r="12"/><circle cx="35" cy="77" r="12"/><circle cx="65" cy="77" r="12"/><circle cx="50" cy="81" r="12"/>
+          <circle cx="35" cy="37" r="13"/><circle cx="65" cy="37" r="13"/><circle cx="50" cy="32" r="14"/><circle cx="33" cy="52" r="14"/><circle cx="67" cy="52" r="14"/><circle cx="50" cy="56" r="22"/>
+        </g>
+        <ellipse cx="37" cy="48" rx="3.6" ry="4.5" fill="#34313a"/><ellipse cx="63" cy="48" rx="3.6" ry="4.5" fill="#34313a"/>
+        <ellipse cx="27" cy="58" rx="5" ry="3.5" fill="#ffbdcb"/><ellipse cx="73" cy="58" rx="5" ry="3.5" fill="#ffbdcb"/>
+        <path d="M45 57q5-6 10 0q-1 6-5 6t-5-6z" fill="#34313a"/><path d="M50 63v4m0 0q-5 4-9-1m9 1q5 4 9-1" fill="none" stroke="#34313a" stroke-width="2.2" stroke-linecap="round"/>
+        <path d="M62 17l7-8 2 9 8 3-8 4-2 8-5-7-8-1 6-4z" fill="#ff9db3" stroke="#e85d75" stroke-width="1.2"/>
+      </svg>
+      </div><p class="font-extrabold text-slate-700 text-lg">간단하게, 안전하게</p><p class="text-sm text-slate-500 mt-2 leading-relaxed">파일을 서버로 보내지 않고 브라우저에서 처리해요. 작업이 끝나면 결과 파일을 내려받으세요.</p></div>
+    </div>
+    <p class="text-xs text-slate-400 mt-8 text-center">비숑 PDF 도구 · 파일은 브라우저에서 처리됩니다.</p>
+  </section>
+  <section id="tool-view">
+    <div class="flex flex-wrap items-center gap-3 mb-5"><button id="back-home" type="button" class="secondary back-home-button"><i class="fa-solid fa-arrow-left"></i><span class="bichon-mini" aria-hidden="true"><svg viewBox="0 0 100 100"><path d="M50 9c-8 0-13 5-17 10-10-3-19 5-20 15-7 6-9 16-4 24-3 10 3 21 11 24 5 9 14 12 23 8 5 5 15 5 20 0 9 4 18 1 23-8 8-3 14-14 11-24 5-8 3-18-4-24-1-10-10-18-20-15C65 14 58 9 50 9z" fill="#fff" stroke="#39323a" stroke-width="5" stroke-linejoin="round"/><path d="M29 36q-5-7 2-10m40 0q7 3 2 10" fill="none" stroke="#e7dce0" stroke-width="5" stroke-linecap="round"/><ellipse cx="37" cy="47" rx="4.5" ry="5.5" fill="#29252b"/><ellipse cx="63" cy="47" rx="4.5" ry="5.5" fill="#29252b"/><ellipse cx="27" cy="58" rx="6" ry="4" fill="#ffb5c5"/><ellipse cx="73" cy="58" rx="6" ry="4" fill="#ffb5c5"/><path d="M44 56q6-7 12 0q-1 6-6 6t-6-6z" fill="#29252b"/><path d="M50 62v5m0 0q-5 4-9-1m9 1q5 4 9-1" fill="none" stroke="#29252b" stroke-width="3" stroke-linecap="round"/><path d="M68 18l4-7 3 8 8 3-8 3-3 8-4-7-8-2z" fill="#ffb5c5" stroke="#d94762" stroke-width="2"/></svg></span>기능 목록</button><div><p class="text-xs font-bold text-pink-500">비숑 PDF 도구</p><h2 id="active-tool-title" class="text-xl sm:text-2xl font-extrabold mt-1">PDF 작업</h2></div></div>
+    <div class="space-y-5"><section id="panel-pdf-to-img" class="tool-panel space-y-5">
+        <div class="bg-white rounded-2xl border border-pink-100 p-5 sm:p-7">
+          <h3 class="text-lg font-bold">PDF를 이미지로 변환</h3><p class="text-sm text-slate-500 mt-1 mb-5">여러 PDF를 한 번에 선택해 각 파일의 페이지를 JPG 또는 PNG로 변환해요.</p>
+          <label class="dropzone block">
+            <input id="pdf-image-input" type="file" accept="application/pdf,.pdf" multiple>
+            <span class="w-14 h-14 rounded-2xl bg-pink-50 text-pink-600 flex items-center justify-center text-2xl mx-auto"><i class="fa-solid fa-cloud-arrow-up"></i></span>
+            <span class="block font-bold mt-4">PDF 파일을 여러 개 선택하세요</span><span class="block text-sm text-slate-400 mt-1">여러 파일을 한 번에 선택할 수 있어요</span>
+          </label>
+          <div id="pdf-image-info" class="hidden mt-4 p-4 bg-slate-50 rounded-xl text-sm"></div>
+          <div id="pdf-image-options" class="hidden mt-4 flex flex-wrap items-center gap-3">
+            <label class="text-sm font-semibold">형식 <select id="image-format" class="border rounded-lg p-2 ml-1"><option value="image/jpeg">JPG</option><option value="image/png">PNG</option></select></label>
+            <label class="text-sm font-semibold">화질 <select id="image-scale" class="border rounded-lg p-2 ml-1"><option value="1">기본</option><option value="1.5">선명</option><option value="2" selected>고화질</option><option value="3">최고화질</option></select></label>
+            <button id="convert-images" class="primary">선택한 PDF 모두 JPG/PNG로 변환</button>
+          </div>
+          <div id="pdf-image-preview" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 mt-5"></div>
         </div>
-        <div id="pdf-image-preview" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 mt-5"></div>
-      </div>
-    </section>
-
-    <section id="panel-img-to-pdf" class="tool-panel space-y-5">
-      <div class="bg-white rounded-2xl border border-pink-100 p-5 sm:p-7">
-        <h3 class="text-lg font-bold">이미지를 하나의 PDF로</h3>
-        <p class="text-sm text-slate-500 mt-1 mb-5">여러 이미지를 추가한 뒤 드래그해 순서를 바꿀 수 있습니다.</p>
-        <label class="dropzone block">
-          <input id="images-input" type="file" accept="image/jpeg,image/png,image/webp" multiple>
-          <span class="w-14 h-14 rounded-2xl bg-pink-50 text-pink-600 flex items-center justify-center text-2xl mx-auto"><i class="fa-regular fa-images"></i></span>
-          <span class="block font-bold mt-4">이미지 파일을 선택하세요</span><span class="block text-sm text-slate-400 mt-1">JPG, PNG, WebP 지원</span>
-        </label>
-        <div id="images-controls" class="hidden mt-4 flex flex-wrap items-center gap-3">
-          <span id="images-count" class="text-sm font-semibold mr-auto"></span>
-          <label class="text-sm">페이지 <select id="image-page-size" class="border rounded-lg p-2"><option value="a4">A4</option><option value="fit">이미지 크기에 맞춤</option></select></label>
-          <label class="text-sm">방향 <select id="image-orientation" class="border rounded-lg p-2"><option value="portrait">세로</option><option value="landscape">가로</option></select></label>
-          <button id="make-pdf" class="primary">PDF 만들기</button><button id="clear-images" class="secondary">초기화</button>
+      </section>
+<section id="panel-img-to-pdf" class="tool-panel space-y-5">
+        <div class="bg-white rounded-2xl border border-pink-100 p-5 sm:p-7">
+          <h3 class="text-lg font-bold">이미지를 하나의 PDF로</h3><p class="text-sm text-slate-500 mt-1 mb-5">여러 이미지를 추가한 뒤 드래그해 순서를 바꿀 수 있습니다.</p>
+          <label class="dropzone block">
+            <input id="images-input" type="file" accept="image/jpeg,image/png,image/webp" multiple>
+            <span class="w-14 h-14 rounded-2xl bg-pink-50 text-pink-600 flex items-center justify-center text-2xl mx-auto"><i class="fa-regular fa-images"></i></span>
+            <span class="block font-bold mt-4">이미지 파일을 선택하세요</span><span class="block text-sm text-slate-400 mt-1">JPG, PNG, WebP 지원</span>
+          </label>
+          <div id="images-controls" class="hidden mt-4 flex flex-wrap items-center gap-3">
+            <span id="images-count" class="text-sm font-semibold mr-auto"></span>
+            <label class="text-sm">페이지 <select id="image-page-size" class="border rounded-lg p-2"><option value="a4">A4</option><option value="fit">이미지 크기에 맞춤</option></select></label>
+            <label class="text-sm">방향 <select id="image-orientation" class="border rounded-lg p-2"><option value="portrait">세로</option><option value="landscape">가로</option></select></label>
+            <button id="make-pdf" class="primary">PDF 만들기</button><button id="clear-images" class="secondary">초기화</button>
+          </div>
+          <div id="images-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-5"></div>
         </div>
-        <div id="images-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-5"></div>
-      </div>
-    </section>
-
-    <section id="panel-pdf-merge" class="tool-panel space-y-5">
-      <div class="bg-white rounded-2xl border border-pink-100 p-5 sm:p-7">
-        <h3 class="text-lg font-bold">PDF 파일 합치기</h3>
-        <p class="text-sm text-slate-500 mt-1 mb-5">여러 PDF를 한 파일로 합칩니다. 목록을 드래그해 순서를 바꾸세요.</p>
-        <label class="dropzone block">
-          <input id="merge-input" type="file" accept="application/pdf,.pdf" multiple>
-          <span class="w-14 h-14 rounded-2xl bg-pink-50 text-pink-600 flex items-center justify-center text-2xl mx-auto"><i class="fa-solid fa-layer-group"></i></span>
-          <span class="block font-bold mt-4">합칠 PDF 파일을 선택하세요</span><span class="block text-sm text-slate-400 mt-1">2개 이상의 PDF를 선택할 수 있습니다</span>
-        </label>
-        <div id="merge-controls" class="hidden mt-4">
-          <p id="merge-count" class="text-sm font-semibold mb-3"></p>
-          <div id="merge-list" class="space-y-2"></div>
-          <div class="flex flex-wrap gap-2 mt-4"><button id="merge-pdfs" class="primary">PDF 합치기 및 다운로드</button><button id="clear-merge" class="secondary">초기화</button></div>
+      </section>
+<section id="panel-pdf-merge" class="tool-panel space-y-5">
+        <div class="bg-white rounded-2xl border border-pink-100 p-5 sm:p-7">
+          <h3 class="text-lg font-bold">PDF 파일 병합</h3><p class="text-sm text-slate-500 mt-1 mb-5">여러 PDF를 한 파일로 합칩니다. 목록을 드래그해 순서를 바꾸세요.</p>
+          <label class="dropzone block">
+            <input id="merge-input" type="file" accept="application/pdf,.pdf" multiple>
+            <span class="w-14 h-14 rounded-2xl bg-pink-50 text-pink-600 flex items-center justify-center text-2xl mx-auto"><i class="fa-solid fa-layer-group"></i></span>
+            <span class="block font-bold mt-4">합칠 PDF 파일을 선택하세요</span><span class="block text-sm text-slate-400 mt-1">2개 이상의 PDF를 선택할 수 있습니다</span>
+          </label>
+          <div id="merge-controls" class="hidden mt-4"><p id="merge-count" class="text-sm font-semibold mb-3"></p><div id="merge-list" class="space-y-2"></div><div class="flex flex-wrap gap-2 mt-4"><button id="merge-pdfs" class="primary">PDF 병합 및 다운로드</button><button id="clear-merge" class="secondary">초기화</button></div></div>
         </div>
-      </div>
-    </section>
-
-    <section id="panel-pdf-edit" class="tool-panel space-y-5">
-      <div class="bg-white rounded-2xl border border-pink-100 p-5 sm:p-7">
-        <h3 class="text-lg font-bold">PDF 페이지 편집</h3>
-        <p class="text-sm text-slate-500 mt-1 mb-5">페이지를 미리 보고 삭제하거나 드래그해 순서를 바꾸세요.</p>
-        <label class="dropzone block">
-          <input id="edit-input" type="file" accept="application/pdf,.pdf">
-          <span class="w-14 h-14 rounded-2xl bg-pink-50 text-pink-600 flex items-center justify-center text-2xl mx-auto"><i class="fa-solid fa-scissors"></i></span>
-          <span class="block font-bold mt-4">편집할 PDF를 선택하세요</span>
-        </label>
-        <div id="edit-controls" class="hidden mt-4">
-          <p id="edit-count" class="text-sm font-semibold mb-3"></p>
-          <div id="edit-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3"></div>
-          <div class="flex flex-wrap gap-2 mt-4"><button id="save-edit" class="primary">편집한 PDF 저장</button><button id="clear-edit" class="secondary">초기화</button></div>
+      </section>
+<section id="panel-pdf-edit" class="tool-panel space-y-5">
+        <div class="bg-white rounded-2xl border border-pink-100 p-5 sm:p-7">
+          <h3 class="text-lg font-bold">PDF 페이지 편집</h3><p class="text-sm text-slate-500 mt-1 mb-5">페이지를 미리 보고 삭제하거나 드래그해 순서를 바꾸세요.</p>
+          <label class="dropzone block">
+            <input id="edit-input" type="file" accept="application/pdf,.pdf">
+            <span class="w-14 h-14 rounded-2xl bg-pink-50 text-pink-600 flex items-center justify-center text-2xl mx-auto"><i class="fa-solid fa-scissors"></i></span>
+            <span class="block font-bold mt-4">편집할 PDF를 선택하세요</span>
+          </label>
+          <div id="edit-controls" class="hidden mt-4"><p id="edit-count" class="text-sm font-semibold mb-3"></p><div id="edit-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3"></div><div class="flex flex-wrap gap-2 mt-4"><button id="save-edit" class="primary">편집한 PDF 저장</button><button id="clear-edit" class="secondary">초기화</button></div></div>
         </div>
-      </div>
-    </section>
-
-    <section id="panel-pdf-split" class="tool-panel space-y-5">
-      <div class="bg-white rounded-2xl border border-pink-100 p-5 sm:p-7">
-        <h3 class="text-lg font-bold">PDF 페이지 나누기</h3>
-        <p class="text-sm text-slate-500 mt-1 mb-5">페이지 범위를 입력해 여러 PDF로 나누고 ZIP 파일로 다운로드합니다.</p>
-        <label class="dropzone block">
-          <input id="split-input" type="file" accept="application/pdf,.pdf">
-          <span class="w-14 h-14 rounded-2xl bg-pink-50 text-pink-600 flex items-center justify-center text-2xl mx-auto"><i class="fa-solid fa-file-circle-minus"></i></span>
-          <span class="block font-bold mt-4">나눌 PDF 파일을 선택하세요</span>
-        </label>
-        <div id="split-controls" class="hidden mt-4">
-          <p id="split-info" class="text-sm font-semibold mb-3"></p>
-          <label for="split-ranges" class="block text-sm font-bold mb-2">페이지 범위</label>
-          <textarea id="split-ranges" rows="3" class="w-full border border-slate-200 rounded-xl p-3 text-sm focus:outline-pink-400" placeholder="예: 1-3, 4-6, 7"></textarea>
-          <p class="text-xs text-slate-500 mt-2">쉼표로 구분하세요. 예: 1-3, 4-6, 7-10. 범위마다 별도 PDF가 생성됩니다.</p>
-          <div class="flex flex-wrap gap-2 mt-4"><button id="split-pdf" class="primary">나누고 ZIP 다운로드</button><button id="clear-split" class="secondary">초기화</button></div>
+      </section>
+<section id="panel-pdf-split" class="tool-panel space-y-5">
+        <div class="bg-white rounded-2xl border border-pink-100 p-5 sm:p-7">
+          <h3 class="text-lg font-bold">PDF 페이지 분할</h3><p class="text-sm text-slate-500 mt-1 mb-5">페이지 범위를 입력해 여러 PDF로 나누고 ZIP 파일로 다운로드합니다.</p>
+          <label class="dropzone block">
+            <input id="split-input" type="file" accept="application/pdf,.pdf">
+            <span class="w-14 h-14 rounded-2xl bg-pink-50 text-pink-600 flex items-center justify-center text-2xl mx-auto"><i class="fa-solid fa-file-circle-minus"></i></span>
+            <span class="block font-bold mt-4">분할할 PDF를 선택하세요</span>
+          </label>
+          <div id="split-controls" class="hidden mt-4">
+            <p id="split-info" class="text-sm font-semibold mb-3"></p>
+            <label for="split-ranges" class="block text-sm font-bold mb-2">페이지 범위</label>
+            <textarea id="split-ranges" rows="3" class="w-full border border-slate-200 rounded-xl p-3 text-sm focus:outline-pink-400" placeholder="예: 1-3, 4-6, 7"></textarea>
+            <p class="text-xs text-slate-500 mt-2">쉼표로 구분하세요. 예: 1-3, 4-6, 7-10. 범위마다 별도 PDF가 생성됩니다.</p>
+            <div class="flex flex-wrap gap-2 mt-4"><button id="split-pdf" class="primary">분할하고 ZIP 다운로드</button><button id="clear-split" class="secondary">초기화</button></div>
+          </div>
         </div>
-      </div>
-    </section>
-
-    <div id="global-status" class="status" role="status" aria-live="polite"></div>
-    <p class="text-xs text-slate-400 mt-5 text-center">파일 처리는 브라우저에서 진행됩니다. 파일을 선택하면 기기에서 처리돼요.</p>
-  </div>
-</section>
+      </section>
+<div id="global-status" class="status" role="status" aria-live="polite"></div>
+      <p class="text-xs text-slate-400 mt-5 text-center">파일 처리는 브라우저에서 진행됩니다. 민감한 문서는 사용 후 다운로드 폴더와 브라우저 파일을 확인해 주세요.</p></div>
+  </section>
 </main>
-
 <script>
 (() => {
-'use strict';
-const $ = id => document.getElementById(id);
-const statusBox = $('global-status');
-let currentPdfFile = null, currentPdfDoc = null;
-let imageFiles = [], mergeFiles = [], editFile = null, editOrder = [], splitFile = null, splitPageCount = 0;
+  'use strict';
+  const $ = id => document.getElementById(id);
+  const statusBox = $('global-status');
+  let currentPdfFiles = [];
+  let imageFiles = [], mergeFiles = [], editFile = null, editOrder = [], splitFile = null, splitPageCount = 0;
+  let editObjectUrls = [];
 
-function status(message,isError=false){
-  statusBox.textContent=message;
-  statusBox.style.background=isError?'#fff0f0':'#fff0f3';
-  statusBox.style.color=isError?'#b42318':'#9f3047';
-  statusBox.classList.add('show');
-}
-function clearStatus(){statusBox.classList.remove('show');statusBox.textContent='';}
-function safeName(name){return name.replace(/\.[^.]+$/,'').replace(/[\\/:*?"<>|]/g,'_')||'document';}
-function downloadBlob(blob,name){
-  const url=URL.createObjectURL(blob),a=document.createElement('a');
-  a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();
-  setTimeout(()=>URL.revokeObjectURL(url),1500);
-}
-function downloadBytes(bytes,name,type='application/pdf'){downloadBlob(new Blob([bytes],{type}),name);}
-function setBusy(button,busy,label='처리 중...'){
-  if(busy){button.dataset.oldText=button.textContent;button.disabled=true;button.textContent=label;}
-  else{button.disabled=false;button.textContent=button.dataset.oldText||button.textContent;}
-}
-async function readPdf(file){
-  if(!file||(!file.type.includes('pdf')&&!file.name.toLowerCase().endsWith('.pdf')))throw new Error('PDF 파일을 선택해 주세요.');
-  return await PDFLib.PDFDocument.load(await file.arrayBuffer());
-}
-function setupSortable(el,onEnd){
-  if(el._sortable)el._sortable.destroy();
-  el._sortable=new Sortable(el,{animation:150,onEnd});
-}
-
-const toolNames={'pdf-to-img':'PDF를 이미지로 변환','img-to-pdf':'이미지를 PDF로 변환','pdf-merge':'PDF 파일 합치기','pdf-edit':'PDF 페이지 편집','pdf-split':'PDF 페이지 나누기'};
-function switchMode(mode){
-  $('home-panel').style.display='none';
-  $('tool-view').classList.add('show');
-  document.querySelectorAll('.tool-panel').forEach(panel=>panel.classList.toggle('active',panel.id===`panel-${mode}`));
-  $('active-tool-title').textContent=toolNames[mode]||'PDF 작업';
-  clearStatus();window.scrollTo({top:0,behavior:'smooth'});
-}
-document.querySelectorAll('.tool-card').forEach(btn=>btn.addEventListener('click',()=>switchMode(btn.dataset.mode)));
-$('back-home').addEventListener('click',()=>{
-  $('tool-view').classList.remove('show');$('home-panel').style.display='';
-  document.querySelectorAll('.tool-panel').forEach(panel=>panel.classList.remove('active'));
-  clearStatus();window.scrollTo({top:0,behavior:'smooth'});
-});
-
-// 1. PDF를 JPG/PNG로 변환
-$('pdf-image-input').addEventListener('change',async e=>{
-  const file=e.target.files[0];if(!file)return;clearStatus();
-  try{
-    currentPdfFile=file;
-    currentPdfDoc=await pdfjsLib.getDocument({data:await file.arrayBuffer()}).promise;
-    $('pdf-image-info').textContent=`${file.name} · 총 ${currentPdfDoc.numPages}페이지`;
-    $('pdf-image-info').classList.remove('hidden');$('pdf-image-options').classList.remove('hidden');
-    $('pdf-image-preview').innerHTML='';
-    status('PDF를 불러왔어요. 변환 버튼을 눌러 이미지 ZIP을 만드세요.');
-  }catch(err){status('PDF를 열지 못했어요: '+err.message,true);}
-});
-$('convert-images').addEventListener('click',async e=>{
-  const btn=e.currentTarget;if(!currentPdfDoc)return;
-  setBusy(btn,true,'이미지 생성 중...');
-  try{
-    const zip=new JSZip(),fmt=$('image-format').value,scale=Number($('image-scale').value),ext=fmt==='image/png'?'png':'jpg';
-    const preview=$('pdf-image-preview');preview.innerHTML='';
-    for(let n=1;n<=currentPdfDoc.numPages;n++){
-      const page=await currentPdfDoc.getPage(n),viewport=page.getViewport({scale});
-      const canvas=document.createElement('canvas'),ctx=canvas.getContext('2d');
-      canvas.width=Math.ceil(viewport.width);canvas.height=Math.ceil(viewport.height);
-      await page.render({canvasContext:ctx,viewport}).promise;
-      const blob=await new Promise(resolve=>canvas.toBlob(resolve,fmt,.92));
-      if(!blob)throw new Error(`${n}페이지 이미지 생성 실패`);
-      zip.file(`page-${String(n).padStart(3,'0')}.${ext}`,blob);
-      if(n<=6){
-        const url=URL.createObjectURL(blob),card=document.createElement('div');card.className='preview-card';
-        card.innerHTML=`<img class="w-full rounded-lg object-contain max-h-64 bg-slate-50" alt="${n}페이지 미리보기"><p class="text-sm text-slate-500 mt-2 text-center">${n}페이지</p>`;
-        card.querySelector('img').src=url;preview.appendChild(card);
-      }
-    }
-    downloadBlob(await zip.generateAsync({type:'blob'}),`${safeName(currentPdfFile.name)}_images.zip`);
-    status(`${currentPdfDoc.numPages}페이지를 변환해 ZIP으로 저장했어요.`);
-  }catch(err){status('변환 오류: '+err.message,true);}
-  finally{setBusy(btn,false);}
-});
-
-// 2. 이미지 여러 장을 PDF로 만들기
-$('images-input').addEventListener('change',e=>{imageFiles=Array.from(e.target.files||[]);renderImageTiles();});
-function renderImageTiles(){
-  const grid=$('images-grid');grid.innerHTML='';
-  $('images-controls').classList.toggle('hidden',imageFiles.length===0);
-  $('images-count').textContent=`선택한 이미지 ${imageFiles.length}장 · 드래그하여 순서 변경`;
-  imageFiles.forEach((file,i)=>{
-    const tile=document.createElement('div');tile.className='preview-card file-tile';tile.dataset.index=String(i);
-    const url=URL.createObjectURL(file);
-    tile.innerHTML=`<img src="${url}" alt="" class="w-full h-36 object-contain rounded-lg bg-slate-50"><p class="text-sm font-semibold truncate mt-2">${file.name}</p><button type="button" class="remove-image text-sm text-rose-600 mt-2">삭제</button>`;
-    tile.querySelector('button').addEventListener('click',()=>{imageFiles.splice(Number(tile.dataset.index),1);renderImageTiles();});
-    grid.appendChild(tile);
-  });
-  setupSortable(grid,()=>{imageFiles=[...grid.children].map(el=>imageFiles[Number(el.dataset.index)]);renderImageTiles();});
-}
-$('clear-images').addEventListener('click',()=>{imageFiles=[];$('images-input').value='';renderImageTiles();clearStatus();});
-$('make-pdf').addEventListener('click',async e=>{
-  const btn=e.currentTarget;if(!imageFiles.length){status('먼저 이미지 파일을 선택해 주세요.',true);return;}
-  setBusy(btn,true,'PDF 생성 중...');
-  try{
-    const {jsPDF}=window.jspdf,size=$('image-page-size').value,orientation=$('image-orientation').value;
-    let pdf=null;
-    for(const file of imageFiles){
-      const dataUrl=await new Promise((resolve,reject)=>{
-        const reader=new FileReader();reader.onload=()=>resolve(reader.result);reader.onerror=()=>reject(new Error('이미지를 읽지 못했습니다.'));reader.readAsDataURL(file);
-      });
-      const img=await new Promise((resolve,reject)=>{const im=new Image();im.onload=()=>resolve(im);im.onerror=()=>reject(new Error(file.name+' 이미지 로드 실패'));im.src=dataUrl;});
-      const type=file.type==='image/png'?'PNG':'JPEG';
-      if(!pdf)pdf=new jsPDF({orientation:size==='fit'?(img.width>=img.height?'landscape':'portrait'):orientation,unit:'pt',format:size==='fit'?[img.width,img.height]:'a4',compress:true});
-      else pdf.addPage(size==='fit'?[img.width,img.height]:'a4',size==='fit'?(img.width>=img.height?'landscape':'portrait'):orientation);
-      const pw=pdf.internal.pageSize.getWidth(),ph=pdf.internal.pageSize.getHeight();
-      let w=img.width,h=img.height;
-      if(size==='a4'){const ratio=Math.min(pw/w,ph/h);w*=ratio;h*=ratio;}
-      pdf.addImage(dataUrl,type,(pw-w)/2,(ph-h)/2,w,h,undefined,'FAST');
-    }
-    downloadBlob(pdf.output('blob'),`images_to_pdf_${Date.now()}.pdf`);status('이미지를 PDF로 만들었어요.');
-  }catch(err){status('PDF 생성 오류: '+err.message,true);}
-  finally{setBusy(btn,false);}
-});
-
-// 3. PDF 파일 합치기
-$('merge-input').addEventListener('change',e=>{mergeFiles=Array.from(e.target.files||[]);renderMergeList();});
-function renderMergeList(){
-  const list=$('merge-list');list.innerHTML='';
-  $('merge-controls').classList.toggle('hidden',mergeFiles.length===0);
-  $('merge-count').textContent=`선택한 PDF ${mergeFiles.length}개 · 드래그하여 순서 변경`;
-  mergeFiles.forEach((file,i)=>{
-    const row=document.createElement('div');row.className='file-tile flex items-center gap-3 p-3 rounded-xl border border-slate-200 bg-white';row.dataset.index=String(i);
-    row.innerHTML=`<i class="fa-solid fa-grip-vertical text-slate-300"></i><i class="fa-regular fa-file-pdf text-rose-500 text-xl"></i><span class="text-sm font-semibold truncate flex-1">${file.name}</span><button class="text-sm text-rose-600 remove-merge" type="button">삭제</button>`;
-    row.querySelector('button').addEventListener('click',()=>{mergeFiles.splice(Number(row.dataset.index),1);renderMergeList();});
-    list.appendChild(row);
-  });
-  setupSortable(list,()=>{mergeFiles=[...list.children].map(el=>mergeFiles[Number(el.dataset.index)]);renderMergeList();});
-}
-$('clear-merge').addEventListener('click',()=>{mergeFiles=[];$('merge-input').value='';renderMergeList();clearStatus();});
-$('merge-pdfs').addEventListener('click',async e=>{
-  const btn=e.currentTarget;if(mergeFiles.length<2){status('합치려면 PDF 파일을 2개 이상 선택해 주세요.',true);return;}
-  setBusy(btn,true,'합치는 중...');
-  try{
-    const out=await PDFLib.PDFDocument.create();
-    for(const file of mergeFiles){const src=await readPdf(file),pages=await out.copyPages(src,src.getPageIndices());pages.forEach(p=>out.addPage(p));}
-    downloadBytes(await out.save(),'merged.pdf');status(`${mergeFiles.length}개 PDF를 하나로 합쳤어요.`);
-  }catch(err){status('합치기 오류: '+err.message,true);}
-  finally{setBusy(btn,false);}
-});
-
-// 4. PDF 페이지 삭제 및 순서 변경
-$('edit-input').addEventListener('change',async e=>{
-  editFile=e.target.files[0];if(!editFile)return;
-  try{const doc=await readPdf(editFile);editOrder=doc.getPageIndices().map(i=>i+1);await renderEditPages();status(`${editOrder.length}페이지를 불러왔어요. 삭제하거나 드래그해 순서를 바꾸세요.`);}
-  catch(err){status('PDF를 열지 못했어요: '+err.message,true);}
-});
-async function renderEditPages(){
-  const grid=$('edit-grid');grid.innerHTML='';$('edit-controls').classList.toggle('hidden',!editFile);
-  $('edit-count').textContent=`페이지 ${editOrder.length}개 · 드래그하여 순서 변경`;
-  if(!editFile)return;
-  const pdf=await pdfjsLib.getDocument({data:await editFile.arrayBuffer()}).promise;
-  for(const pageNum of editOrder){
-    const page=await pdf.getPage(pageNum),viewport=page.getViewport({scale:.45}),canvas=document.createElement('canvas');
-    canvas.width=Math.ceil(viewport.width);canvas.height=Math.ceil(viewport.height);
-    await page.render({canvasContext:canvas.getContext('2d'),viewport}).promise;
-    const tile=document.createElement('div');tile.className='preview-card file-tile';tile.dataset.page=String(pageNum);
-    tile.innerHTML=`<img src="${canvas.toDataURL('image/jpeg',.8)}" class="w-full h-40 object-contain bg-slate-50 rounded-lg" alt="페이지 ${pageNum}"><div class="flex items-center justify-between gap-2 mt-2"><span class="text-sm font-bold">원본 ${pageNum}페이지</span><button type="button" class="remove-page text-sm text-rose-600 font-bold">삭제</button></div>`;
-    tile.querySelector('button').addEventListener('click',()=>{editOrder=editOrder.filter(n=>n!==pageNum);renderEditPages();});
-    grid.appendChild(tile);
+  function status(message, isError=false) {
+    statusBox.textContent = message;
+    statusBox.style.background = isError ? '#fff0f0' : '#fff0f3';
+    statusBox.style.color = isError ? '#b42318' : '#9f3047';
+    statusBox.classList.add('show');
   }
-  setupSortable(grid,()=>{editOrder=[...grid.children].map(el=>Number(el.dataset.page));renderEditPages();});
-}
-$('clear-edit').addEventListener('click',()=>{editFile=null;editOrder=[];$('edit-input').value='';renderEditPages();clearStatus();});
-$('save-edit').addEventListener('click',async e=>{
-  const btn=e.currentTarget;
-  if(!editFile){status('편집할 PDF를 먼저 선택해 주세요.',true);return;}
-  if(!editOrder.length){status('저장할 페이지가 없습니다. 최소 한 페이지는 남겨 주세요.',true);return;}
-  setBusy(btn,true,'저장 중...');
-  try{
-    const src=await readPdf(editFile),out=await PDFLib.PDFDocument.create();
-    const pages=await out.copyPages(src,editOrder.map(n=>n-1));pages.forEach(p=>out.addPage(p));
-    downloadBytes(await out.save(),`${safeName(editFile.name)}_edited.pdf`);status('편집한 PDF를 저장했어요.');
-  }catch(err){status('페이지 편집 저장 오류: '+err.message,true);}
-  finally{setBusy(btn,false);}
-});
+  function clearStatus(){ statusBox.classList.remove('show'); statusBox.textContent=''; }
+  function safeName(name){ return name.replace(/\.[^.]+$/, '').replace(/[\\/:*?"<>|]/g, '_') || 'document'; }
+  function downloadBlob(blob, name) {
+    const url = URL.createObjectURL(blob), a = document.createElement('a');
+    a.href=url; a.download=name; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url), 1500);
+  }
+  function downloadBytes(bytes, name, type='application/pdf') { downloadBlob(new Blob([bytes],{type}), name); }
+  function setBusy(button, busy, label='처리 중...') {
+    if (busy) { button.dataset.oldText=button.textContent; button.disabled=true; button.textContent=label; button.style.opacity='.65'; }
+    else { button.disabled=false; button.textContent=button.dataset.oldText || button.textContent; button.style.opacity=''; }
+  }
+  async function readPdf(file) {
+    if (!file || (!file.type.includes('pdf') && !file.name.toLowerCase().endsWith('.pdf'))) throw new Error('PDF 파일을 선택해 주세요.');
+    return await PDFLib.PDFDocument.load(await file.arrayBuffer());
+  }
+  function setupSortable(el, onEnd) {
+    if (el._sortable) el._sortable.destroy();
+    el._sortable = new Sortable(el, {animation:150, onEnd});
+  }
 
-// 5. 페이지 범위별 PDF 분할
-$('split-input').addEventListener('change',async e=>{
-  splitFile=e.target.files[0];if(!splitFile)return;
-  try{
-    const doc=await readPdf(splitFile);splitPageCount=doc.getPageCount();
-    $('split-info').textContent=`${splitFile.name} · 총 ${splitPageCount}페이지`;
-    $('split-ranges').value=`1-${splitPageCount}`;$('split-controls').classList.remove('hidden');
-    status('페이지 범위를 입력해 나눌 수 있어요.');
-  }catch(err){status('PDF를 열지 못했어요: '+err.message,true);}
-});
-$('clear-split').addEventListener('click',()=>{splitFile=null;splitPageCount=0;$('split-input').value='';$('split-controls').classList.add('hidden');clearStatus();});
-$('split-pdf').addEventListener('click',async e=>{
-  const btn=e.currentTarget;if(!splitFile)return;
-  const raw=$('split-ranges').value.trim();if(!raw){status('페이지 범위를 입력해 주세요.',true);return;}
-  let ranges=[];
-  try{
-    ranges=raw.split(',').map(part=>{
-      const m=part.trim().match(/^(\d+)\s*(?:-\s*(\d+))?$/);
-      if(!m)throw new Error(`범위 형식이 올바르지 않습니다: ${part}`);
-      const start=Number(m[1]),end=Number(m[2]||m[1]);
-      if(start<1||end<start||end>splitPageCount)throw new Error(`페이지 범위는 1~${splitPageCount} 안에서 입력해 주세요: ${part}`);
-      return {start,end};
-    });
-  }catch(err){status(err.message,true);return;}
-  setBusy(btn,true,'나누는 중...');
-  try{
-    const source=await readPdf(splitFile),zip=new JSZip(),base=safeName(splitFile.name);
-    for(let i=0;i<ranges.length;i++){
-      const {start,end}=ranges[i],out=await PDFLib.PDFDocument.create();
-      const pages=await out.copyPages(source,Array.from({length:end-start+1},(_,k)=>start-1+k));
-      pages.forEach(p=>out.addPage(p));
-      zip.file(`${base}_part${i+1}_pages_${start}-${end}.pdf`,await out.save());
+  const toolNames = {'pdf-to-img':'PDF를 이미지로 변환','img-to-pdf':'이미지를 PDF로 변환','pdf-merge':'PDF 파일 합치기','pdf-edit':'PDF 페이지 편집','pdf-split':'PDF 페이지 나누기'};
+  function switchMode(mode) {
+    $('home-panel').style.display = 'none';
+    $('tool-view').classList.add('show');
+    document.querySelectorAll('.tool-panel').forEach(panel => panel.classList.toggle('active', panel.id === `panel-${mode}`));
+    $('active-tool-title').textContent = toolNames[mode] || 'PDF 작업';
+    clearStatus();
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+  document.querySelectorAll('.tool-card').forEach(btn => btn.addEventListener('click', () => switchMode(btn.dataset.mode)));
+  $('back-home').addEventListener('click', () => {
+    $('tool-view').classList.remove('show'); $('home-panel').style.display = '';
+    document.querySelectorAll('.tool-panel').forEach(panel => panel.classList.remove('active'));
+    clearStatus(); window.scrollTo({top:0,behavior:'smooth'});
+  });
+
+  $('pdf-image-input').addEventListener('change', async e => {
+    currentPdfFiles = Array.from(e.target.files || []);
+    if (!currentPdfFiles.length) return;
+    clearStatus();
+    $('pdf-image-preview').innerHTML = '';
+    $('pdf-image-info').classList.remove('hidden');
+    $('pdf-image-options').classList.remove('hidden');
+    $('pdf-image-info').textContent = `선택한 PDF ${currentPdfFiles.length}개 · 각 PDF의 모든 페이지를 개별 이미지로 변환합니다.`;
+    status('파일을 확인했어요. 변환 버튼을 누르면 PDF별 이미지가 ZIP 파일 하나에 정리돼요.');
+  });
+
+  $('convert-images').addEventListener('click', async e => {
+    const btn = e.currentTarget;
+    if (!currentPdfFiles.length) { status('PDF 파일을 하나 이상 선택해 주세요.', true); return; }
+    setBusy(btn, true, 'PDF 파일 변환 중...');
+    try {
+      const zip = new JSZip();
+      const fmt = $('image-format').value;
+      const scale = Number($('image-scale').value);
+      const ext = fmt === 'image/png' ? 'png' : 'jpg';
+      const preview = $('pdf-image-preview');
+      preview.innerHTML = '';
+      let totalPages = 0;
+
+      for (let fileIndex = 0; fileIndex < currentPdfFiles.length; fileIndex++) {
+        const file = currentPdfFiles[fileIndex];
+        status(`변환 중: ${fileIndex + 1}/${currentPdfFiles.length} · ${file.name}`);
+        const pdf = await pdfjsLib.getDocument({ data: await file.arrayBuffer() }).promise;
+        const folderName = safeName(file.name);
+        const folder = zip.folder(folderName);
+
+        for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+          const page = await pdf.getPage(pageNum);
+          const viewport = page.getViewport({ scale });
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d');
+          canvas.width = Math.ceil(viewport.width);
+          canvas.height = Math.ceil(viewport.height);
+          await page.render({ canvasContext: ctx, viewport }).promise;
+          const blob = await new Promise(resolve => canvas.toBlob(resolve, fmt, 0.92));
+          if (!blob) throw new Error(`${file.name} ${pageNum}페이지 이미지 생성에 실패했습니다.`);
+
+          const pageName = `${folderName}_page-${String(pageNum).padStart(3, '0')}.${ext}`;
+          folder.file(pageName, blob);
+          totalPages++;
+
+          if (totalPages <= 6) {
+            const url = URL.createObjectURL(blob);
+            const card = document.createElement('div');
+            card.className = 'preview-card';
+            card.innerHTML = `<img class="w-full rounded-lg object-contain max-h-64 bg-slate-50" alt="변환 미리보기"><p class="text-xs text-slate-500 mt-2 text-center"></p>`;
+            card.querySelector('img').src = url;
+            card.querySelector('p').textContent = `${file.name} · ${pageNum}페이지`;
+            preview.appendChild(card);
+          }
+        }
+      }
+
+      const zipBlob = await zip.generateAsync({ type: 'blob' });
+      downloadBlob(zipBlob, `PDF_이미지_변환_${Date.now()}.zip`);
+      status(`완료! PDF ${currentPdfFiles.length}개, 총 ${totalPages}페이지를 ${ext.toUpperCase()} 이미지로 변환했어요. ZIP 안에 PDF별 폴더로 정리했어요.`);
+      $('pdf-image-info').textContent = `변환 완료 · PDF ${currentPdfFiles.length}개 · 총 ${totalPages}페이지`;
+    } catch (err) {
+      status('변환 중 오류가 발생했어요: ' + err.message, true);
+    } finally {
+      setBusy(btn, false);
     }
-    downloadBlob(await zip.generateAsync({type:'blob'}),`${base}_split.zip`);
-    status(`${ranges.length}개 PDF로 나눠 ZIP으로 저장했어요.`);
-  }catch(err){status('나누기 오류: '+err.message,true);}
-  finally{setBusy(btn,false);}
-});
+  });
+
+  $('images-input').addEventListener('change', e => {
+    imageFiles=Array.from(e.target.files||[]);
+    renderImageTiles();
+  });
+  function renderImageTiles(){
+    const grid=$('images-grid'); grid.innerHTML='';
+    $('images-controls').classList.toggle('hidden',imageFiles.length===0);
+    $('images-count').textContent=`선택한 이미지 ${imageFiles.length}장 · 드래그하여 순서 변경`;
+    imageFiles.forEach((file,i)=>{
+      const tile=document.createElement('div'); tile.className='preview-card file-tile'; tile.dataset.index=String(i);
+      const url=URL.createObjectURL(file);
+      tile.innerHTML=`<img src="${url}" alt="" class="w-full h-36 object-contain rounded-lg bg-slate-50"><p class="text-xs font-semibold truncate mt-2">${file.name}</p><button type="button" class="remove-image text-xs text-rose-600 mt-2">삭제</button>`;
+      tile.querySelector('.remove-image').addEventListener('click',()=>{imageFiles.splice(Number(tile.dataset.index),1);renderImageTiles();});
+      grid.appendChild(tile);
+    });
+    setupSortable(grid,()=>{const ordered=[...grid.children].map(el=>imageFiles[Number(el.dataset.index)]);imageFiles=ordered;renderImageTiles();});
+  }
+  $('clear-images').addEventListener('click',()=>{imageFiles=[];$('images-input').value='';renderImageTiles();clearStatus();});
+  $('make-pdf').addEventListener('click', async e=>{
+    const btn=e.currentTarget;if(!imageFiles.length){status('먼저 이미지 파일을 선택해 주세요.',true);return;}
+    setBusy(btn,true,'PDF 생성 중...');
+    try{
+      const {jsPDF}=window.jspdf, size=$('image-page-size').value, orientation=$('image-orientation').value;
+      let pdf=null;
+      for(const file of imageFiles){
+        const dataUrl=await new Promise((resolve,reject)=>{
+          const reader=new FileReader();reader.onload=()=>resolve(reader.result);reader.onerror=()=>reject(new Error('이미지를 읽지 못했습니다.'));reader.readAsDataURL(file);
+        });
+        const img=await new Promise((resolve,reject)=>{const im=new Image();im.onload=()=>resolve(im);im.onerror=()=>reject(new Error(file.name+' 이미지 로드 실패'));im.src=dataUrl;});
+        const type=file.type==='image/png'?'PNG':'JPEG';
+        if(!pdf) pdf=new jsPDF({orientation: size==='fit'?(img.width>=img.height?'landscape':'portrait'):orientation,unit:'pt',format:size==='fit'?[img.width,img.height]:'a4',compress:true});
+        else {
+          const pageOrientation=size==='fit'?(img.width>=img.height?'landscape':'portrait'):orientation;
+          pdf.addPage(size==='fit'?[img.width,img.height]:'a4',pageOrientation);
+        }
+        const pw=pdf.internal.pageSize.getWidth(), ph=pdf.internal.pageSize.getHeight();
+        let w=img.width,h=img.height;
+        if(size==='a4'){const ratio=Math.min(pw/w,ph/h);w*=ratio;h*=ratio;}
+        pdf.addImage(dataUrl,type,(pw-w)/2,(ph-h)/2,w,h,undefined,'FAST');
+      }
+      downloadBlob(pdf.output('blob'),`images_to_pdf_${Date.now()}.pdf`);status('이미지를 PDF로 만들었어요.');
+    }catch(err){status('PDF 생성 오류: '+err.message,true);}
+    finally{setBusy(btn,false);}
+  });
+
+  $('merge-input').addEventListener('change',e=>{
+    mergeFiles=Array.from(e.target.files||[]);
+    renderMergeList();
+  });
+  function renderMergeList(){
+    const list=$('merge-list');list.innerHTML='';
+    $('merge-controls').classList.toggle('hidden',mergeFiles.length===0);
+    $('merge-count').textContent=`선택한 PDF ${mergeFiles.length}개 · 드래그하여 병합 순서 변경`;
+    mergeFiles.forEach((file,i)=>{
+      const row=document.createElement('div');row.className='file-tile flex items-center gap-3 p-3 rounded-xl border border-slate-200 bg-white';row.dataset.index=String(i);
+      row.innerHTML=`<i class="fa-solid fa-grip-vertical text-slate-300"></i><i class="fa-regular fa-file-pdf text-rose-500 text-xl"></i><span class="text-sm font-semibold truncate flex-1">${file.name}</span><button class="text-xs text-rose-600 remove-merge" type="button">삭제</button>`;
+      row.querySelector('button').addEventListener('click',()=>{mergeFiles.splice(Number(row.dataset.index),1);renderMergeList();});
+      list.appendChild(row);
+    });
+    setupSortable(list,()=>{mergeFiles=[...list.children].map(el=>mergeFiles[Number(el.dataset.index)]);renderMergeList();});
+  }
+  $('clear-merge').addEventListener('click',()=>{mergeFiles=[];$('merge-input').value='';renderMergeList();clearStatus();});
+  $('merge-pdfs').addEventListener('click',async e=>{
+    const btn=e.currentTarget;if(mergeFiles.length<2){status('병합하려면 PDF 파일을 2개 이상 선택해 주세요.',true);return;}
+    setBusy(btn,true,'병합 중...');
+    try{
+      const out=await PDFLib.PDFDocument.create();
+      for(const file of mergeFiles){const src=await readPdf(file);const pages=await out.copyPages(src,src.getPageIndices());pages.forEach(p=>out.addPage(p));}
+      downloadBytes(await out.save(),'merged.pdf');status(`${mergeFiles.length}개 PDF를 하나로 합쳤어요.`);
+    }catch(err){status('병합 오류: '+err.message,true);}
+    finally{setBusy(btn,false);}
+  });
+
+  $('edit-input').addEventListener('change',async e=>{
+    editFile=e.target.files[0];if(!editFile)return;
+    try{
+      const doc=await readPdf(editFile);editOrder=doc.getPageIndices().map(i=>i+1);
+      await renderEditPages();status(`${editOrder.length}페이지를 불러왔어요. 삭제 또는 드래그로 순서를 바꾸세요.`);
+    }catch(err){status('PDF를 열지 못했어요: '+err.message,true);}
+  });
+  async function renderEditPages(){
+    editObjectUrls.forEach(URL.revokeObjectURL);editObjectUrls=[];
+    const grid=$('edit-grid');grid.innerHTML='';$('edit-controls').classList.toggle('hidden',!editFile);
+    $('edit-count').textContent=`페이지 ${editOrder.length}개 · 드래그하여 순서 변경`;
+    if(!editFile)return;
+    const pdf=await pdfjsLib.getDocument({data:await editFile.arrayBuffer()}).promise;
+    for(const pageNum of editOrder){
+      const page=await pdf.getPage(pageNum),viewport=page.getViewport({scale:.45}),canvas=document.createElement('canvas');
+      canvas.width=Math.ceil(viewport.width);canvas.height=Math.ceil(viewport.height);
+      await page.render({canvasContext:canvas.getContext('2d'),viewport}).promise;
+      const url=canvas.toDataURL('image/jpeg',.8);
+      const tile=document.createElement('div');tile.className='preview-card file-tile';tile.dataset.page=String(pageNum);
+      tile.innerHTML=`<img src="${url}" class="w-full h-40 object-contain bg-slate-50 rounded-lg" alt="페이지 ${pageNum}"><div class="flex items-center justify-between gap-2 mt-2"><span class="text-xs font-bold">원본 ${pageNum}페이지</span><button type="button" class="remove-page text-xs text-rose-600 font-bold">삭제</button></div>`;
+      tile.querySelector('button').addEventListener('click',()=>{editOrder=editOrder.filter(n=>n!==pageNum);renderEditPages();});
+      grid.appendChild(tile);
+    }
+    setupSortable(grid,()=>{editOrder=[...grid.children].map(el=>Number(el.dataset.page));renderEditPages();});
+  }
+  $('clear-edit').addEventListener('click',()=>{editFile=null;editOrder=[];$('edit-input').value='';renderEditPages();clearStatus();});
+  $('save-edit').addEventListener('click',async e=>{
+    const btn=e.currentTarget;if(!editFile){status('편집할 PDF를 먼저 선택해 주세요.',true);return;}
+    if(!editOrder.length){status('저장할 페이지가 없습니다. 최소 한 페이지는 남겨 주세요.',true);return;}
+    setBusy(btn,true,'저장 중...');
+    try{
+      const src=await readPdf(editFile),out=await PDFLib.PDFDocument.create();
+      const pages=await out.copyPages(src,editOrder.map(n=>n-1));pages.forEach(p=>out.addPage(p));
+      downloadBytes(await out.save(),`${safeName(editFile.name)}_edited.pdf`);status('편집한 PDF를 저장했어요.');
+    }catch(err){status('페이지 편집 저장 오류: '+err.message,true);}
+    finally{setBusy(btn,false);}
+  });
+
+  $('split-input').addEventListener('change',async e=>{
+    splitFile=e.target.files[0];if(!splitFile)return;
+    try{
+      const doc=await readPdf(splitFile);splitPageCount=doc.getPageCount();
+      $('split-info').textContent=`${splitFile.name} · 총 ${splitPageCount}페이지`;
+      $('split-ranges').value=`1-${splitPageCount}`;$('split-controls').classList.remove('hidden');
+      status('페이지 범위를 입력해 분할할 수 있어요.');
+    }catch(err){status('PDF를 열지 못했어요: '+err.message,true);}
+  });
+  $('clear-split').addEventListener('click',()=>{splitFile=null;splitPageCount=0;$('split-input').value='';$('split-controls').classList.add('hidden');clearStatus();});
+  $('split-pdf').addEventListener('click',async e=>{
+    const btn=e.currentTarget;if(!splitFile)return;
+    const raw=$('split-ranges').value.trim();
+    if(!raw){status('페이지 범위를 입력해 주세요.',true);return;}
+    let ranges=[];
+    try{
+      ranges=raw.split(',').map(part=>{
+        const m=part.trim().match(/^(\d+)\s*(?:-\s*(\d+))?$/);
+        if(!m)throw new Error(`범위 형식이 올바르지 않습니다: ${part}`);
+        const start=Number(m[1]),end=Number(m[2]||m[1]);
+        if(start<1||end<start||end>splitPageCount)throw new Error(`페이지 범위는 1~${splitPageCount} 안에서 입력해 주세요: ${part}`);
+        return {start,end};
+      });
+    }catch(err){status(err.message,true);return;}
+    setBusy(btn,true,'분할 중...');
+    try{
+      const source=await readPdf(splitFile),zip=new JSZip(),base=safeName(splitFile.name);
+      for(let i=0;i<ranges.length;i++){
+        const {start,end}=ranges[i],out=await PDFLib.PDFDocument.create();
+        const pages=await out.copyPages(source,Array.from({length:end-start+1},(_,k)=>start-1+k));
+        pages.forEach(p=>out.addPage(p));
+        zip.file(`${base}_part${i+1}_pages_${start}-${end}.pdf`,await out.save());
+      }
+      downloadBlob(await zip.generateAsync({type:'blob'}),`${base}_split.zip`);status(`${ranges.length}개 PDF로 분할해 ZIP으로 저장했어요.`);
+    }catch(err){status('분할 오류: '+err.message,true);}
+    finally{setBusy(btn,false);}
+  });
+
+  window.addEventListener('error', e => {
+    if (e.message && /pdfjsLib|PDFLib|JSZip|Sortable|jspdf/i.test(e.message)) {
+      status('필요한 라이브러리를 불러오지 못했어요. 인터넷 연결을 확인한 뒤 페이지를 새로고침해 주세요.',true);
+    }
+  });
 })();
 </script>
+<footer class="max-w-6xl mx-auto px-4 pb-8 pt-3 text-center" aria-label="제작자 표시">
+  <div class="inline-flex items-center justify-center gap-2.5 text-base creator-signature">
+    <span>by 쏭</span>
+    <span class="creator-bichon" aria-hidden="true">
+      <svg viewBox="0 0 100 100" role="img" aria-label="비숑 프리제">
+        <path d="M50 9c-8 0-13 5-17 10-10-3-19 5-20 15-7 6-9 16-4 24-3 10 3 21 11 24 5 9 14 12 23 8 5 5 15 5 20 0 9 4 18 1 23-8 8-3 14-14 11-24 5-8 3-18-4-24-1-10-10-18-20-15C65 14 58 9 50 9z" fill="#fff" stroke="#39323a" stroke-width="5" stroke-linejoin="round"/>
+        <g fill="#fff" stroke="#e6dce0" stroke-width="2.5"><circle cx="50" cy="18" r="10"/><circle cx="34" cy="25" r="10"/><circle cx="66" cy="25" r="10"/><circle cx="23" cy="39" r="10"/><circle cx="77" cy="39" r="10"/><circle cx="25" cy="62" r="10"/><circle cx="75" cy="62" r="10"/><circle cx="39" cy="76" r="10"/><circle cx="61" cy="76" r="10"/></g>
+        <ellipse cx="37" cy="47" rx="4.5" ry="5.5" fill="#29252b"/><ellipse cx="63" cy="47" rx="4.5" ry="5.5" fill="#29252b"/><ellipse cx="27" cy="58" rx="6" ry="4" fill="#ffb5c5"/><ellipse cx="73" cy="58" rx="6" ry="4" fill="#ffb5c5"/><path d="M44 56q6-7 12 0q-1 6-6 6t-6-6z" fill="#29252b"/><path d="M50 62v5m0 0q-5 4-9-1m9 1q5 4 9-1" fill="none" stroke="#29252b" stroke-width="3" stroke-linecap="round"/>
+        <path d="M68 18l4-7 3 8 8 3-8 3-3 8-4-7-8-2z" fill="#ffb5c5" stroke="#d94762" stroke-width="2"/>
+      </svg>
+    </span>
+  </div>
+</footer>
 </body>
 </html>
