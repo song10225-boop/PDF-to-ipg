@@ -1,574 +1,459 @@
 <!DOCTYPE html>
-<html lang="ko" class="dark">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PDF를 이미지(JPG/PNG)로 변환기</title>
-    <!-- Tailwind CSS CDN -->
+    <title>PDF & 이미지 통합 변환기</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        brand: {
-                            50: '#eff6ff',
-                            100: '#dbeafe',
-                            500: '#3b82f6',
-                            600: '#2563eb',
-                            700: '#1d4ed8',
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-    <!-- FontAwesome for Icons -->
+    <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- PDF.js CDN -->
+    <!-- PDF.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-    <!-- JSZip CDN for batch zip download -->
+    <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    </script>
+    <!-- JSZip -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    <style>
-        /* Custom scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: rgba(0, 0, 0, 0.05);
-        }
-        .dark ::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.05);
-        }
-        ::-webkit-scrollbar-thumb {
-            background: rgba(156, 163, 175, 0.5);
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: rgba(107, 114, 128, 0.8);
-        }
-        
-        .drag-over {
-            border-color: #3b82f6 !important;
-            background-color: rgba(59, 130, 246, 0.08) !important;
-        }
-    </style>
+    <!-- jsPDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- SortableJS for Image Ordering -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
 </head>
-<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 min-h-screen flex flex-col font-sans transition-colors duration-200">
+<body class="bg-slate-50 min-h-screen text-slate-800 flex flex-col justify-between">
 
     <!-- Header -->
-    <header class="border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-            <div class="flex items-center space-x-3">
-                <div class="p-2 bg-brand-500 text-white rounded-xl shadow-lg shadow-brand-500/30">
-                    <i class="fa-solid fa-file-pdf text-xl"></i>
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-3">
+                <div class="bg-blue-600 text-white p-2.5 rounded-xl shadow-md">
+                    <i class="fa-solid fa-file-arrow-down text-xl"></i>
                 </div>
                 <div>
-                    <h1 class="font-bold text-lg leading-none">PDF ➔ Image Converter</h1>
-                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">안전한 100% 클라이언트 사이드 변환기</p>
+                    <h1 class="text-xl font-bold tracking-tight">PDF & 이미지 변환 센터</h1>
+                    <p class="text-xs text-slate-500">안전한 브라우저 기반 실시간 변환 서비스</p>
                 </div>
             </div>
 
-            <div class="flex items-center space-x-3">
-                <!-- Security Badge -->
-                <span class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
-                    <i class="fa-solid fa-shield-halved"></i> 서버 전송 없음 (보안)
-                </span>
-                
-                <!-- Dark Mode Toggle -->
-                <button id="themeToggleBtn" class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-slate-600 dark:text-slate-300">
-                    <i class="fa-solid fa-moon dark:hidden"></i>
-                    <i class="fa-solid fa-sun hidden dark:block text-amber-400"></i>
+            <!-- Mode Switch Tabs -->
+            <div class="bg-slate-100 p-1 rounded-xl flex gap-1 border border-slate-200">
+                <button id="tab-pdf-to-img" onclick="switchMode('pdf-to-img')" class="px-4 py-2 text-sm font-semibold rounded-lg bg-white text-blue-600 shadow-sm transition-all flex items-center gap-2">
+                    <i class="fa-solid fa-file-pdf"></i> PDF ➔ 이미지(JPG)
+                </button>
+                <button id="tab-img-to-pdf" onclick="switchMode('img-to-pdf')" class="px-4 py-2 text-sm font-semibold rounded-lg text-slate-600 hover:text-slate-900 transition-all flex items-center gap-2">
+                    <i class="fa-solid fa-images"></i> 이미지 ➔ PDF
                 </button>
             </div>
         </div>
     </header>
 
-    <!-- Main Content -->
-    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col">
+    <!-- Main Container -->
+    <main class="max-w-7xl mx-auto px-4 py-8 w-full flex-grow">
 
-        <!-- Initial Upload Box (Visible when no PDF is loaded) -->
-        <div id="uploadSection" class="flex-1 flex flex-col items-center justify-center py-12">
-            <div id="dropZone" class="w-full max-w-2xl border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-3xl p-8 sm:p-12 text-center bg-white dark:bg-slate-800/50 shadow-sm hover:border-brand-500 dark:hover:border-brand-500 transition-all cursor-pointer group">
-                <input type="file" id="fileInput" accept="application/pdf" class="hidden">
-                
-                <div class="w-20 h-20 mx-auto mb-6 rounded-2xl bg-brand-50 dark:bg-slate-700/50 flex items-center justify-center text-brand-500 group-hover:scale-110 transition-transform">
-                    <i class="fa-solid fa-cloud-arrow-up text-3xl"></i>
-                </div>
-
-                <h2 class="text-xl font-bold mb-2">PDF 파일을 여기에 드래그하거나 클릭하세요</h2>
-                <p class="text-slate-500 dark:text-slate-400 text-sm mb-6 max-w-md mx-auto">
-                    컴퓨터 내에서 변환이 이루어지므로 파일이 외부 서버로 업로드되지 않습니다.
-                </p>
-
-                <button class="px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white font-medium rounded-xl shadow-lg shadow-brand-500/25 transition-all flex items-center gap-2 mx-auto">
-                    <i class="fa-regular fa-folder-open"></i> PDF 파일 선택
-                </button>
-            </div>
-
-            <!-- Features Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl w-full mt-12">
-                <div class="p-5 rounded-2xl bg-white dark:bg-slate-800/40 border border-slate-200/60 dark:border-slate-800 flex items-start gap-4">
-                    <div class="p-3 bg-emerald-500/10 text-emerald-500 rounded-xl">
-                        <i class="fa-solid fa-lock text-lg"></i>
+        <!-- ==================== MODE 1: PDF to Image ==================== -->
+        <div id="section-pdf-to-img" class="space-y-6">
+            <!-- Upload Box -->
+            <div id="pdf-drop-zone" class="border-2 border-dashed border-slate-300 rounded-2xl p-8 text-center bg-white hover:border-blue-500 transition-all cursor-pointer shadow-sm relative group">
+                <input type="file" id="pdf-file-input" accept="application/pdf" class="absolute inset-0 opacity-0 cursor-pointer w-full h-full">
+                <div class="max-w-sm mx-auto space-y-3">
+                    <div class="w-16 h-16 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto text-2xl group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-cloud-arrow-up"></i>
                     </div>
-                    <div>
-                        <h3 class="font-semibold text-sm mb-1">개인정보 완벽 보호</h3>
-                        <p class="text-xs text-slate-500 dark:text-slate-400">파일이 내 브라우저에서만 처리되므로 유출 우려가 전혀 없습니다.</p>
-                    </div>
-                </div>
-                <div class="p-5 rounded-2xl bg-white dark:bg-slate-800/40 border border-slate-200/60 dark:border-slate-800 flex items-start gap-4">
-                    <div class="p-3 bg-blue-500/10 text-blue-500 rounded-xl">
-                        <i class="fa-solid fa-bolt text-lg"></i>
-                    </div>
-                    <div>
-                        <h3 class="font-semibold text-sm mb-1">초고속 이미지 추출</h3>
-                        <p class="text-xs text-slate-500 dark:text-slate-400">네트워크 대기시간 없이 단 몇 초 만에 JPG/PNG로 변환합니다.</p>
-                    </div>
-                </div>
-                <div class="p-5 rounded-2xl bg-white dark:bg-slate-800/40 border border-slate-200/60 dark:border-slate-800 flex items-start gap-4">
-                    <div class="p-3 bg-purple-500/10 text-purple-500 rounded-xl">
-                        <i class="fa-solid fa-file-zipper text-lg"></i>
-                    </div>
-                    <div>
-                        <h3 class="font-semibold text-sm mb-1">일괄 ZIP 다운로드</h3>
-                        <p class="text-xs text-slate-500 dark:text-slate-400">모든 페이지를 한 번에 하나의 ZIP 파일로 압축해 다운로드합니다.</p>
-                    </div>
+                    <h3 class="text-lg font-bold text-slate-700">변환할 PDF 파일을 여기에 올려주세요</h3>
+                    <p class="text-xs text-slate-400">마우스로 드래그하여 놓거나 클릭해서 파일을 선택하세요</p>
                 </div>
             </div>
-        </div>
 
-        <!-- Processing & Preview Workspace (Hidden initially) -->
-        <div id="workspaceSection" class="hidden flex-1 flex flex-col lg:flex-row gap-6">
-            
-            <!-- Left Sidebar: Settings & Controls -->
-            <div class="w-full lg:w-80 flex-shrink-0 flex flex-col gap-6">
-                <!-- File Info Card -->
-                <div class="p-5 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700/60 shadow-sm">
-                    <div class="flex items-center justify-between mb-3">
-                        <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">선택된 파일</span>
-                        <button id="resetBtn" class="text-xs text-rose-500 hover:text-rose-600 font-medium flex items-center gap-1">
-                            <i class="fa-solid fa-trash-can"></i> 파일 변경
-                        </button>
+            <!-- Controls & Options Panel -->
+            <div id="pdf-controls" class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 hidden flex flex-col lg:flex-row justify-between items-center gap-6">
+                <div class="flex flex-wrap items-center gap-6 w-full lg:w-auto">
+                    <div>
+                        <span id="pdf-file-name" class="font-bold text-slate-700 block text-base truncate max-w-xs">파일 이름.pdf</span>
+                        <span id="pdf-page-count" class="text-xs text-slate-500">총 0 페이지</span>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200 hidden sm:block"></div>
+                    <div class="flex items-center gap-3">
+                        <label class="text-sm font-medium text-slate-600">포맷:</label>
+                        <select id="export-format" class="border border-slate-300 rounded-lg px-3 py-1.5 text-sm bg-slate-50 focus:ring-2 focus:ring-blue-500 outline-none">
+                            <option value="image/jpeg">JPG</option>
+                            <option value="image/png">PNG</option>
+                        </select>
                     </div>
                     <div class="flex items-center gap-3">
-                        <div class="p-3 bg-rose-500/10 text-rose-500 rounded-xl text-xl">
-                            <i class="fa-solid fa-file-pdf"></i>
-                        </div>
-                        <div class="overflow-hidden">
-                            <p id="fileName" class="font-semibold text-sm truncate">document.pdf</p>
-                            <p id="fileMeta" class="text-xs text-slate-400">0 MB • 총 0 페이지</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Export Settings Card -->
-                <div class="p-5 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700/60 shadow-sm space-y-5">
-                    <h3 class="font-bold text-sm border-b border-slate-100 dark:border-slate-700/50 pb-3">변환 옵션</h3>
-
-                    <!-- Image Format -->
-                    <div>
-                        <label class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-2">이미지 포맷</label>
-                        <div class="grid grid-cols-2 gap-2 p-1 bg-slate-100 dark:bg-slate-900 rounded-xl">
-                            <button id="fmtJpgBtn" class="py-2 text-xs font-semibold rounded-lg bg-white dark:bg-slate-800 shadow-sm text-brand-600 dark:text-brand-400 transition-all">JPG</button>
-                            <button id="fmtPngBtn" class="py-2 text-xs font-semibold rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-all">PNG</button>
-                        </div>
-                    </div>
-
-                    <!-- Quality / DPI -->
-                    <div>
-                        <div class="flex justify-between items-center mb-1">
-                            <label class="text-xs font-medium text-slate-500 dark:text-slate-400">해상도 (DPI / 화질)</label>
-                            <span id="scaleVal" class="text-xs font-bold text-brand-600 dark:text-brand-400">보통 (1.5x)</span>
-                        </div>
-                        <input type="range" id="scaleSlider" min="1" max="3" step="0.5" value="1.5" class="w-full h-1.5 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-brand-500">
-                        <div class="flex justify-between text-[10px] text-slate-400 mt-1">
-                            <span>빠름 (1x)</span>
-                            <span>보통 (1.5x)</span>
-                            <span>고화질 (3x)</span>
-                        </div>
-                    </div>
-
-                    <!-- Page Selection Range -->
-                    <div>
-                        <label class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">페이지 범위</label>
-                        <select id="pageRangeType" class="w-full text-xs p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-brand-500">
-                            <option value="all">전체 페이지</option>
-                            <option value="custom">직접 지정 (예: 1-3, 5)</option>
+                        <label class="text-sm font-medium text-slate-600">화질(해상도):</label>
+                        <select id="export-scale" class="border border-slate-300 rounded-lg px-3 py-1.5 text-sm bg-slate-50 focus:ring-2 focus:ring-blue-500 outline-none">
+                            <option value="1">1x (기본)</option>
+                            <option value="1.5">1.5x (선명)</option>
+                            <option value="2" selected>2x (고화질 추천)</option>
+                            <option value="3">3x (최고화질)</option>
                         </select>
-                        <input type="text" id="customRangeInput" placeholder="예: 1-3, 5, 8" class="hidden mt-2 w-full text-xs p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none focus:border-brand-500">
                     </div>
+                </div>
 
-                    <!-- Action Buttons -->
-                    <div class="space-y-2 pt-2 border-t border-slate-100 dark:border-slate-700/50">
-                        <!-- Individual Batch Download Button -->
-                        <button id="downloadEachBtn" class="w-full py-3 bg-slate-800 hover:bg-slate-900 dark:bg-slate-700 dark:hover:bg-slate-600 text-white font-semibold rounded-xl shadow-md transition-all flex items-center justify-center gap-2 text-sm">
-                            <i class="fa-solid fa-file-image"></i> 선택 페이지 건별 다운로드
-                        </button>
-
-                        <!-- Batch ZIP Download Button -->
-                        <button id="downloadAllBtn" class="w-full py-3 bg-brand-600 hover:bg-brand-700 text-white font-semibold rounded-xl shadow-lg shadow-brand-500/25 transition-all flex items-center justify-center gap-2 text-sm">
-                            <i class="fa-solid fa-file-zipper"></i> 선택 페이지 ZIP(압축) 다운로드
-                        </button>
-                    </div>
+                <div class="flex items-center gap-3 w-full lg:w-auto justify-end">
+                    <button onclick="downloadAllIndividual()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2">
+                        <i class="fa-solid fa-download"></i> 건별 연속 다운로드
+                    </button>
+                    <button onclick="downloadAsZip()" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-5 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2">
+                        <i class="fa-solid fa-file-zipper"></i> ZIP 일괄 다운로드
+                    </button>
+                    <button onclick="resetPdfApp()" class="bg-slate-100 hover:bg-slate-200 text-slate-600 p-2.5 rounded-xl text-sm transition-all" title="초기화">
+                        <i class="fa-solid fa-rotate-right"></i>
+                    </button>
                 </div>
             </div>
 
-            <!-- Right Workspace: Thumbnail Grids -->
-            <div class="flex-1 flex flex-col bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700/60 shadow-sm overflow-hidden min-h-[500px]">
-                
-                <!-- Status Header -->
-                <div class="p-4 border-b border-slate-100 dark:border-slate-700/50 flex items-center justify-between bg-slate-50/50 dark:bg-slate-800/50">
-                    <div class="flex items-center gap-2">
-                        <h3 class="font-bold text-sm">페이지 미리보기</h3>
-                        <span id="pageCountBadge" class="text-xs px-2 py-0.5 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 font-medium">0 페이지</span>
-                    </div>
+            <!-- Loading Spinner -->
+            <div id="pdf-loading" class="hidden text-center py-12">
+                <div class="inline-block animate-spin rounded-full h-10 w-10 border-4 border-blue-600 border-t-transparent"></div>
+                <p class="mt-4 text-sm font-medium text-slate-600" id="loading-text">PDF 파일을 분석하고 변환하는 중입니다...</p>
+            </div>
 
-                    <!-- Progress bar text -->
-                    <div id="renderingProgress" class="hidden items-center gap-2 text-xs text-brand-600 dark:text-brand-400 font-medium">
-                        <i class="fa-solid fa-circle-notch fa-spin"></i> 렌더링 중... <span id="progressText">0%</span>
-                    </div>
-                </div>
+            <!-- Preview Grid -->
+            <div id="pdf-preview-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
+        </div>
 
-                <!-- Thumbnails Container -->
-                <div class="flex-1 p-6 overflow-y-auto max-h-[calc(100vh-250px)]">
-                    <div id="thumbnailContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                        <!-- Dynamic Thumbnail Cards Inserted Here -->
+
+        <!-- ==================== MODE 2: Image to PDF ==================== -->
+        <div id="section-img-to-pdf" class="space-y-6 hidden">
+            <!-- Upload Box -->
+            <div id="img-drop-zone" class="border-2 border-dashed border-slate-300 rounded-2xl p-8 text-center bg-white hover:border-blue-500 transition-all cursor-pointer shadow-sm relative group">
+                <input type="file" id="img-file-input" accept="image/*" multiple class="absolute inset-0 opacity-0 cursor-pointer w-full h-full">
+                <div class="max-w-sm mx-auto space-y-3">
+                    <div class="w-16 h-16 bg-indigo-50 text-indigo-600 rounded-full flex items-center justify-center mx-auto text-2xl group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-images"></i>
                     </div>
+                    <h3 class="text-lg font-bold text-slate-700">변환할 이미지들을 선택해주세요 (복수 선택 가능)</h3>
+                    <p class="text-xs text-slate-400">마우스로 순서를 자유롭게 드래그해서 바꿀 수 있습니다</p>
                 </div>
             </div>
 
+            <!-- Image Options & Convert Bar -->
+            <div id="img-controls" class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 hidden flex flex-col lg:flex-row justify-between items-center gap-6">
+                <div class="flex flex-wrap items-center gap-6 w-full lg:w-auto">
+                    <div>
+                        <span id="img-total-count" class="font-bold text-slate-700 block text-base">선택된 이미지: 0장</span>
+                        <span class="text-xs text-slate-400">카드를 드래그하여 순서를 변경하세요</span>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200 hidden sm:block"></div>
+                    <div class="flex items-center gap-3">
+                        <label class="text-sm font-medium text-slate-600">용지 규격:</label>
+                        <select id="pdf-page-size" class="border border-slate-300 rounded-lg px-3 py-1.5 text-sm bg-slate-50 focus:ring-2 focus:ring-indigo-500 outline-none">
+                            <option value="a4">A4 (표준)</option>
+                            <option value="fit">이미지 비율 맞춤</option>
+                        </select>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <label class="text-sm font-medium text-slate-600">방향:</label>
+                        <select id="pdf-orientation" class="border border-slate-300 rounded-lg px-3 py-1.5 text-sm bg-slate-50 focus:ring-2 focus:ring-indigo-500 outline-none">
+                            <option value="portrait">세로형</option>
+                            <option value="landscape">가로형</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-3 w-full lg:w-auto justify-end">
+                    <button onclick="generatePDFFromImages()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-6 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2">
+                        <i class="fa-solid fa-file-pdf"></i> PDF 파일로 합치기
+                    </button>
+                    <button onclick="resetImgApp()" class="bg-slate-100 hover:bg-slate-200 text-slate-600 p-2.5 rounded-xl text-sm transition-all" title="전체 초기화">
+                        <i class="fa-solid fa-rotate-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Image Sortable Grid -->
+            <div id="img-sortable-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4"></div>
         </div>
 
     </main>
 
-    <!-- Modal Progress Indicator -->
-    <div id="loadingModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden flex-col items-center justify-center z-50">
-        <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-xl max-w-xs w-full text-center space-y-4">
-            <div class="w-12 h-12 border-4 border-brand-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
-            <h4 id="modalTitle" class="font-bold text-sm">이미지 처리 중...</h4>
-            <p id="modalProgressText" class="text-xs text-slate-400">잠시만 기다려주세요.</p>
-        </div>
-    </div>
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-400">
+        &copy; PDF & Image Converter. Client-side secure processing. No data uploaded to server.
+    </footer>
 
-    <!-- JavaScript Logic -->
+    <!-- Scripts Logic -->
     <script>
-        // Setup PDF.js Worker
-        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        // Tab Switcher
+        function switchMode(mode) {
+            const pdfSection = document.getElementById('section-pdf-to-img');
+            const imgSection = document.getElementById('section-img-to-pdf');
+            const pdfTab = document.getElementById('tab-pdf-to-img');
+            const imgTab = document.getElementById('tab-img-to-pdf');
 
-        // DOM Elements
-        const themeToggleBtn = document.getElementById('themeToggleBtn');
-        const uploadSection = document.getElementById('uploadSection');
-        const workspaceSection = document.getElementById('workspaceSection');
-        const dropZone = document.getElementById('dropZone');
-        const fileInput = document.getElementById('fileInput');
-        const resetBtn = document.getElementById('resetBtn');
-        const fileNameEl = document.getElementById('fileName');
-        const fileMetaEl = document.getElementById('fileMeta');
-        
-        const fmtJpgBtn = document.getElementById('fmtJpgBtn');
-        const fmtPngBtn = document.getElementById('fmtPngBtn');
-        const scaleSlider = document.getElementById('scaleSlider');
-        const scaleVal = document.getElementById('scaleVal');
-        const pageRangeType = document.getElementById('pageRangeType');
-        const customRangeInput = document.getElementById('customRangeInput');
-        
-        const downloadEachBtn = document.getElementById('downloadEachBtn');
-        const downloadAllBtn = document.getElementById('downloadAllBtn');
-        const thumbnailContainer = document.getElementById('thumbnailContainer');
-        const pageCountBadge = document.getElementById('pageCountBadge');
-        const renderingProgress = document.getElementById('renderingProgress');
-        const progressText = document.getElementById('progressText');
-        const loadingModal = document.getElementById('loadingModal');
-        const modalTitle = document.getElementById('modalTitle');
-        const modalProgressText = document.getElementById('modalProgressText');
-
-        // State variables
-        let currentPdf = null;
-        let pdfFile = null;
-        let selectedFormat = 'image/jpeg'; // 'image/jpeg' or 'image/png'
-        let currentScale = 1.5;
-        let totalPages = 0;
-        let renderedPagesData = {}; // Stores pageNum -> Canvas Data URL
-
-        // --- Theme Switcher ---
-        themeToggleBtn.addEventListener('click', () => {
-            document.documentElement.classList.toggle('dark');
-        });
-
-        // --- Drag & Drop Handlers ---
-        dropZone.addEventListener('click', () => fileInput.click());
-        dropZone.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            dropZone.classList.add('drag-over');
-        });
-        dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
-        dropZone.addEventListener('drop', (e) => {
-            e.preventDefault();
-            dropZone.classList.remove('drag-over');
-            if (e.dataTransfer.files.length > 0) {
-                handleFile(e.dataTransfer.files[0]);
-            }
-        });
-        fileInput.addEventListener('change', (e) => {
-            if (e.target.files.length > 0) {
-                handleFile(e.target.files[0]);
-            }
-        });
-
-        resetBtn.addEventListener('click', () => {
-            currentPdf = null;
-            pdfFile = null;
-            renderedPagesData = {};
-            thumbnailContainer.innerHTML = '';
-            fileInput.value = '';
-            workspaceSection.classList.add('hidden');
-            uploadSection.classList.remove('hidden');
-        });
-
-        // Format selector switches
-        fmtJpgBtn.addEventListener('click', () => {
-            selectedFormat = 'image/jpeg';
-            fmtJpgBtn.className = "py-2 text-xs font-semibold rounded-lg bg-white dark:bg-slate-800 shadow-sm text-brand-600 dark:text-brand-400 transition-all";
-            fmtPngBtn.className = "py-2 text-xs font-semibold rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-all";
-        });
-        fmtPngBtn.addEventListener('click', () => {
-            selectedFormat = 'image/png';
-            fmtPngBtn.className = "py-2 text-xs font-semibold rounded-lg bg-white dark:bg-slate-800 shadow-sm text-brand-600 dark:text-brand-400 transition-all";
-            fmtJpgBtn.className = "py-2 text-xs font-semibold rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-all";
-        });
-
-        // Scale slider handler
-        scaleSlider.addEventListener('input', (e) => {
-            currentScale = parseFloat(e.target.value);
-            const scaleLabels = { '1': '빠름 (1x)', '1.5': '보통 (1.5x)', '2': '선명함 (2x)', '2.5': '고화질 (2.5x)', '3': '최고화질 (3x)' };
-            scaleVal.textContent = scaleLabels[e.target.value] || `${currentScale}x`;
-            if (currentPdf) renderAllPages();
-        });
-
-        // Custom page range toggler
-        pageRangeType.addEventListener('change', (e) => {
-            if (e.target.value === 'custom') {
-                customRangeInput.classList.remove('hidden');
+            if (mode === 'pdf-to-img') {
+                pdfSection.classList.remove('hidden');
+                imgSection.classList.add('hidden');
+                pdfTab.className = "px-4 py-2 text-sm font-semibold rounded-lg bg-white text-blue-600 shadow-sm transition-all flex items-center gap-2";
+                imgTab.className = "px-4 py-2 text-sm font-semibold rounded-lg text-slate-600 hover:text-slate-900 transition-all flex items-center gap-2";
             } else {
-                customRangeInput.classList.add('hidden');
+                pdfSection.classList.add('hidden');
+                imgSection.classList.remove('hidden');
+                imgTab.className = "px-4 py-2 text-sm font-semibold rounded-lg bg-white text-indigo-600 shadow-sm transition-all flex items-center gap-2";
+                pdfTab.className = "px-4 py-2 text-sm font-semibold rounded-lg text-slate-600 hover:text-slate-900 transition-all flex items-center gap-2";
             }
-        });
+        }
 
-        // --- File Processing ---
-        async function handleFile(file) {
-            if (file.type !== 'application/pdf') {
-                alert('PDF 파일만 업로드할 수 있습니다.');
-                return;
-            }
+        // ==================== PDF to Image Logic ====================
+        let pdfDoc = null;
+        let pdfPagesData = [];
+        let loadedPdfFileName = "converted_document";
 
-            pdfFile = file;
-            fileNameEl.textContent = file.name;
-            fileMetaEl.textContent = `${(file.size / (1024 * 1024)).toFixed(2)} MB • 읽는 중...`;
+        const pdfFileInput = document.getElementById('pdf-file-input');
+        pdfFileInput.addEventListener('change', handlePdfUpload);
 
-            uploadSection.classList.add('hidden');
-            workspaceSection.classList.remove('hidden');
+        async function handlePdfUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            loadedPdfFileName = file.name.replace(/\.[^/.]+$/, "");
+            document.getElementById('pdf-file-name').textContent = file.name;
+            document.getElementById('pdf-loading').classList.remove('hidden');
+            document.getElementById('pdf-preview-container').innerHTML = '';
+            document.getElementById('pdf-controls').classList.add('hidden');
 
             try {
                 const arrayBuffer = await file.arrayBuffer();
-                currentPdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-                totalPages = currentPdf.numPages;
+                pdfDoc = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+                document.getElementById('pdf-page-count').textContent = `총 ${pdfDoc.numPages} 페이지`;
                 
-                pageCountBadge.textContent = `총 ${totalPages} 페이지`;
-                fileMetaEl.textContent = `${(file.size / (1024 * 1024)).toFixed(2)} MB • 총 ${totalPages} 페이지`;
+                document.getElementById('pdf-loading').classList.add('hidden');
+                document.getElementById('pdf-controls').classList.remove('hidden');
 
-                renderAllPages();
+                await renderAllPdfPages();
             } catch (err) {
                 console.error(err);
-                alert('PDF 파일을 불러오는데 실패했습니다.');
-                resetBtn.click();
+                alert('PDF 파일을 읽어오는 중 오류가 발생했습니다.');
+                document.getElementById('pdf-loading').classList.add('hidden');
             }
         }
 
-        // --- Render PDF Pages onto Canvases ---
-        async function renderAllPages() {
-            thumbnailContainer.innerHTML = '';
-            renderedPagesData = {};
-            renderingProgress.classList.remove('hidden');
-            renderingProgress.classList.add('flex');
+        async function renderAllPdfPages() {
+            const container = document.getElementById('pdf-preview-container');
+            container.innerHTML = '';
+            pdfPagesData = [];
 
-            for (let i = 1; i <= totalPages; i++) {
-                // Update Progress
-                const percent = Math.round((i / totalPages) * 100);
-                progressText.textContent = `${percent}%`;
+            const format = document.getElementById('export-format').value;
+            const scale = parseFloat(document.getElementById('export-scale').value);
+            const ext = format === 'image/jpeg' ? 'jpg' : 'png';
 
-                // Create Skeleton / Card UI
+            for (let i = 1; i <= pdfDoc.numPages; i++) {
+                const page = await pdfDoc.getPage(i);
+                const viewport = page.getViewport({ scale: scale });
+                
+                const canvas = document.createElement('canvas');
+                const context = canvas.getContext('2d');
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+
+                await page.render({ canvasContext: context, viewport: viewport }).promise;
+                const dataUrl = canvas.toDataURL(format, 0.95);
+                pdfPagesData.push({ pageNum: i, dataUrl: dataUrl, ext: ext });
+
+                // Card UI
                 const card = document.createElement('div');
-                card.className = "group relative bg-slate-50 dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700/80 p-3 flex flex-col items-center shadow-sm hover:shadow-md transition-all";
-                card.id = `page-card-${i}`;
-
+                card.className = "bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm flex flex-col";
                 card.innerHTML = `
-                    <div class="relative w-full aspect-[1/1.4] bg-slate-200 dark:bg-slate-800 rounded-lg overflow-hidden flex items-center justify-center mb-3">
-                        <canvas id="canvas-page-${i}" class="max-w-full max-h-full object-contain shadow-sm"></canvas>
-                        <div id="loader-${i}" class="absolute inset-0 flex items-center justify-center bg-slate-100/80 dark:bg-slate-800/80">
-                            <i class="fa-solid fa-circle-notch fa-spin text-brand-500"></i>
-                        </div>
+                    <div class="bg-slate-100 p-3 border-b border-slate-200 flex justify-between items-center text-xs font-semibold text-slate-600">
+                        <span>페이지 ${i}</span>
+                        <span>${canvas.width} x ${canvas.height}px</span>
                     </div>
-                    <div class="w-full flex items-center justify-between text-xs">
-                        <span class="font-semibold text-slate-500 dark:text-slate-400">${i} 페이지</span>
-                        <button onclick="downloadSinglePage(${i})" class="px-3 py-1.5 bg-slate-200 dark:bg-slate-700 hover:bg-brand-500 hover:text-white dark:hover:bg-brand-600 transition-colors rounded-lg font-semibold flex items-center gap-1.5 text-slate-700 dark:text-slate-200">
-                            <i class="fa-solid fa-download"></i> 다운로드
-                        </button>
+                    <div class="p-3 bg-slate-50 flex-grow flex items-center justify-center overflow-hidden h-48">
+                        <img src="${dataUrl}" class="max-h-full max-w-full object-contain rounded shadow-sm border border-slate-200">
+                    </div>
+                    <div class="p-3 border-t border-slate-200 bg-white">
+                        <a href="${dataUrl}" download="${loadedPdfFileName}_p${i}.${ext}" class="w-full bg-slate-100 hover:bg-blue-50 text-slate-700 hover:text-blue-600 text-xs font-semibold py-2 rounded-xl transition-all flex items-center justify-center gap-1.5">
+                            <i class="fa-solid fa-download"></i> 개별 다운로드
+                        </a>
                     </div>
                 `;
-                thumbnailContainer.appendChild(card);
-
-                // Render page on canvas
-                await renderPageCanvas(i);
+                container.appendChild(card);
             }
-
-            renderingProgress.classList.add('hidden');
-            renderingProgress.classList.remove('flex');
         }
 
-        async function renderPageCanvas(pageNum) {
-            const page = await currentPdf.getPage(pageNum);
-            const viewport = page.getViewport({ scale: currentScale });
+        // Options change listener
+        document.getElementById('export-format').addEventListener('change', () => { if(pdfDoc) renderAllPdfPages(); });
+        document.getElementById('export-scale').addEventListener('change', () => { if(pdfDoc) renderAllPdfPages(); });
 
-            const canvas = document.getElementById(`canvas-page-${pageNum}`);
-            const loader = document.getElementById(`loader-${pageNum}`);
-            const ctx = canvas.getContext('2d');
+        async function downloadAsZip() {
+            if (pdfPagesData.length === 0) return;
+            const zip = new JSZip();
+            const folder = zip.folder(loadedPdfFileName + "_images");
 
-            canvas.height = viewport.height;
-            canvas.width = viewport.width;
-
-            const renderContext = {
-                canvasContext: ctx,
-                viewport: viewport
-            };
-
-            await page.render(renderContext).promise;
-            
-            // Store canvas reference
-            renderedPagesData[pageNum] = canvas;
-            
-            if (loader) loader.remove();
-        }
-
-        // --- Single Page Download ---
-        window.downloadSinglePage = function(pageNum) {
-            const canvas = renderedPagesData[pageNum];
-            if (!canvas) return;
-
-            const ext = selectedFormat === 'image/jpeg' ? 'jpg' : 'png';
-            const imageUrl = canvas.toDataURL(selectedFormat, 0.92);
-
-            const a = document.createElement('a');
-            a.href = imageUrl;
-            a.download = `${pdfFile.name.replace('.pdf', '')}_page_${pageNum}.${ext}`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-        };
-
-        // --- Page Range Parsing ---
-        function getSelectedPages() {
-            const rangeType = pageRangeType.value;
-            if (rangeType === 'all') {
-                return Array.from({ length: totalPages }, (_, i) => i + 1);
-            }
-
-            const input = customRangeInput.value.trim();
-            if (!input) return Array.from({ length: totalPages }, (_, i) => i + 1);
-
-            const pages = new Set();
-            const parts = input.split(',');
-
-            parts.forEach(part => {
-                const sub = part.trim();
-                if (sub.includes('-')) {
-                    const [start, end] = sub.split('-').map(v => parseInt(v.trim()));
-                    if (!isNaN(start) && !isNaN(end)) {
-                        for (let p = Math.max(1, start); p <= Math.min(totalPages, end); p++) {
-                            pages.add(p);
-                        }
-                    }
-                } else {
-                    const val = parseInt(sub);
-                    if (!isNaN(val) && val >= 1 && val <= totalPages) {
-                        pages.add(val);
-                    }
-                }
+            pdfPagesData.forEach(item => {
+                const base64Data = item.dataUrl.split(',')[1];
+                folder.file(`${loadedPdfFileName}_page_${item.pageNum}.${item.ext}`, base64Data, { base64: true });
             });
 
-            return Array.from(pages).sort((a, b) => a - b);
+            const content = await zip.generateAsync({ type: "blob" });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(content);
+            link.download = `${loadedPdfFileName}_all_images.zip`;
+            link.click();
         }
 
-        // --- Download Each Page Separately (Consecutive Downloads) ---
-        downloadEachBtn.addEventListener('click', async () => {
-            const targetPages = getSelectedPages();
-            if (targetPages.length === 0) {
-                alert('다운로드할 페이지를 선택해 주세요.');
-                return;
+        async function downloadAllIndividual() {
+            if (pdfPagesData.length === 0) return;
+            for (let i = 0; i < pdfPagesData.length; i++) {
+                const item = pdfPagesData[i];
+                const link = document.createElement('a');
+                link.href = item.dataUrl;
+                link.download = `${loadedPdfFileName}_p${item.pageNum}.${item.ext}`;
+                link.click();
+                await new Promise(resolve => setTimeout(resolve, 300)); // 다운로드 간격 조절
             }
+        }
 
-            modalTitle.textContent = '개별 이미지 다운로드 중...';
-            loadingModal.classList.remove('hidden');
-            loadingModal.classList.add('flex');
+        function resetPdfApp() {
+            pdfDoc = null;
+            pdfPagesData = [];
+            document.getElementById('pdf-file-input').value = '';
+            document.getElementById('pdf-preview-container').innerHTML = '';
+            document.getElementById('pdf-controls').classList.add('hidden');
+        }
 
-            for (let index = 0; index < targetPages.length; index++) {
-                const pageNum = targetPages[index];
-                modalProgressText.textContent = `파일 저장 중... (${index + 1}/${targetPages.length})`;
-                
-                downloadSinglePage(pageNum);
 
-                // Delay slightly between downloads to prevent browser blocking multiple downloads
-                await new Promise(resolve => setTimeout(resolve, 250));
+        // ==================== Image to PDF Logic ====================
+        let selectedImages = [];
+        const imgFileInput = document.getElementById('img-file-input');
+        const imgGrid = document.getElementById('img-sortable-grid');
+
+        new Sortable(imgGrid, {
+            animation: 150,
+            onEnd: function() {
+                // DOM 순서에 맞춰 array 재정렬
+                const newOrder = [];
+                imgGrid.querySelectorAll('.img-card').forEach(card => {
+                    const idx = parseInt(card.dataset.index);
+                    newOrder.push(selectedImages[idx]);
+                });
+                // 인덱스 재매핑
+                selectedImages = newOrder;
+                renderImgGrid();
             }
-
-            loadingModal.classList.add('hidden');
-            loadingModal.classList.remove('flex');
         });
 
-        // --- Batch ZIP Download ---
-        downloadAllBtn.addEventListener('click', async () => {
-            const targetPages = getSelectedPages();
-            if (targetPages.length === 0) {
-                alert('다운로드할 페이지를 선택해 주세요.');
+        imgFileInput.addEventListener('change', (e) => {
+            const files = Array.from(e.target.files);
+            if (files.length === 0) return;
+
+            files.forEach(file => {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    selectedImages.push({
+                        name: file.name,
+                        dataUrl: event.target.result
+                    });
+                    renderImgGrid();
+                };
+                reader.readAsDataURL(file);
+            });
+            imgFileInput.value = '';
+        });
+
+        function renderImgGrid() {
+            imgGrid.innerHTML = '';
+            if (selectedImages.length > 0) {
+                document.getElementById('img-controls').classList.remove('hidden');
+                document.getElementById('img-total-count').textContent = `선택된 이미지: ${selectedImages.length}장`;
+            } else {
+                document.getElementById('img-controls').classList.add('hidden');
                 return;
             }
 
-            modalTitle.textContent = '이미지 압축 중...';
-            loadingModal.classList.remove('hidden');
-            loadingModal.classList.add('flex');
+            selectedImages.forEach((img, idx) => {
+                const div = document.createElement('div');
+                div.className = "img-card bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm flex flex-col relative group cursor-grab active:cursor-grabbing";
+                div.dataset.index = idx;
+                div.innerHTML = `
+                    <div class="absolute top-2 left-2 bg-slate-900/75 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold z-10">${idx + 1}</div>
+                    <button onclick="removeImage(${idx})" class="absolute top-2 right-2 bg-rose-500 hover:bg-rose-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs z-10 shadow-md">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                    <div class="h-32 bg-slate-100 flex items-center justify-center p-2 overflow-hidden">
+                        <img src="${img.dataUrl}" class="max-h-full max-w-full object-contain rounded">
+                    </div>
+                    <div class="p-2 text-center text-xs text-slate-500 truncate bg-white border-t border-slate-100">
+                        ${img.name}
+                    </div>
+                `;
+                imgGrid.appendChild(div);
+            });
+        }
 
-            const zip = new JSZip();
-            const ext = selectedFormat === 'image/jpeg' ? 'jpg' : 'png';
-            const folderName = pdfFile.name.replace('.pdf', '');
+        function removeImage(idx) {
+            selectedImages.splice(idx, 1);
+            renderImgGrid();
+        }
 
-            for (let index = 0; index < targetPages.length; index++) {
-                const pageNum = targetPages[index];
-                modalProgressText.textContent = `페이지 압축 중... (${index + 1}/${targetPages.length})`;
+        async function generatePDFFromImages() {
+            if (selectedImages.length === 0) return;
 
-                const canvas = renderedPagesData[pageNum];
-                if (canvas) {
-                    const dataUrl = canvas.toDataURL(selectedFormat, 0.92);
-                    const base64Data = dataUrl.split(',')[1];
-                    zip.file(`${folderName}_page_${pageNum}.${ext}`, base64Data, { base64: true });
+            const { jsPDF } = window.jspdf;
+            const pageSizeOpt = document.getElementById('pdf-page-size').value;
+            const orientationOpt = document.getElementById('pdf-orientation').value;
+
+            const doc = new jsPDF({
+                orientation: orientationOpt,
+                unit: 'mm',
+                format: pageSizeOpt === 'a4' ? 'a4' : [210, 297]
+            });
+
+            for (let i = 0; i < selectedImages.length; i++) {
+                if (i > 0) doc.addPage();
+
+                const imgData = selectedImages[i].dataUrl;
+                
+                // 이미지 실제 비율 계산용 객체 생성
+                const imgObj = new Image();
+                imgObj.src = imgData;
+                await new Promise(resolve => { imgObj.onload = resolve; });
+
+                const pageWidth = doc.internal.pageSize.getWidth();
+                const pageHeight = doc.internal.pageSize.getHeight();
+
+                if (pageSizeOpt === 'fit') {
+                    // 이미지 비율 그대로 페이지 크기 맞춤
+                    const ratio = imgObj.width / imgObj.height;
+                    let w = pageWidth;
+                    let h = pageWidth / ratio;
+                    if (h > pageHeight) {
+                        h = pageHeight;
+                        w = pageHeight * ratio;
+                    }
+                    doc.addImage(imgData, 'JPEG', (pageWidth - w)/2, (pageHeight - h)/2, w, h);
+                } else {
+                    // A4 규격 맞춤 (여백 유지 배피)
+                    const margin = 10; // 10mm 여백
+                    const availWidth = pageWidth - (margin * 2);
+                    const availHeight = pageHeight - (margin * 2);
+
+                    const imgRatio = imgObj.width / imgObj.height;
+                    let w = availWidth;
+                    let h = availWidth / imgRatio;
+
+                    if (h > availHeight) {
+                        h = availHeight;
+                        w = availHeight * imgRatio;
+                    }
+
+                    const x = margin + (availWidth - w) / 2;
+                    const y = margin + (availHeight - h) / 2;
+
+                    doc.addImage(imgData, 'JPEG', x, y, w, h);
                 }
             }
 
-            modalProgressText.textContent = 'ZIP 파일 생성 중...';
-            const content = await zip.generateAsync({ type: 'blob' });
+            doc.save('converted_images.pdf');
+        }
 
-            // Trigger Download
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(content);
-            a.download = `${folderName}_images.zip`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-
-            loadingModal.classList.add('hidden');
-            loadingModal.classList.remove('flex');
-        });
+        function resetImgApp() {
+            selectedImages = [];
+            document.getElementById('img-file-input').value = '';
+            document.getElementById('img-sortable-grid').innerHTML = '';
+            document.getElementById('img-controls').classList.add('hidden');
+        }
     </script>
 </body>
 </html>
