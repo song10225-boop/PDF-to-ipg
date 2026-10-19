@@ -43,4 +43,550 @@
                     <i class="fa-solid fa-image"></i> PDF ➔ JPG
                 </button>
                 <button id="tab-img-to-pdf" onclick="switchMode('img-to-pdf')" class="px-3 py-2 font-semibold rounded-lg text-slate-600 hover:text-slate-900 transition-all flex items-center gap-1.5">
-                    <i class="fa-solid fa
+                    <i class="fa-solid fa-file-image"></i> JPG ➔ PDF
+                </button>
+                <button id="tab-pdf-merge" onclick="switchMode('pdf-merge')" class="px-3 py-2 font-semibold rounded-lg text-slate-600 hover:text-slate-900 transition-all flex items-center gap-1.5">
+                    <i class="fa-solid fa-object-group"></i> PDF 병합(합치기)
+                </button>
+                <button id="tab-pdf-edit" onclick="switchMode('pdf-edit')" class="px-3 py-2 font-semibold rounded-lg text-slate-600 hover:text-slate-900 transition-all flex items-center gap-1.5">
+                    <i class="fa-solid fa-scissors"></i> 페이지 분할·삭제·순서
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-7xl mx-auto px-4 py-8 w-full flex-grow">
+
+        <!-- ==================== MODE 1: PDF to Image ==================== -->
+        <div id="section-pdf-to-img" class="space-y-6">
+            <div id="pdf-drop-zone" class="border-2 border-dashed border-slate-300 rounded-2xl p-8 text-center bg-white hover:border-blue-500 transition-all cursor-pointer shadow-sm relative group">
+                <input type="file" id="pdf-file-input" accept="application/pdf" class="absolute inset-0 opacity-0 cursor-pointer w-full h-full">
+                <div class="max-w-sm mx-auto space-y-3">
+                    <div class="w-16 h-16 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto text-2xl group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-700">변환할 PDF 파일을 여기에 올려주세요</h3>
+                    <p class="text-xs text-slate-400">PDF의 각 페이지를 JPG/PNG 이미지로 추출합니다</p>
+                </div>
+            </div>
+
+            <div id="pdf-controls" class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 hidden flex flex-col lg:flex-row justify-between items-center gap-6">
+                <div class="flex flex-wrap items-center gap-6 w-full lg:w-auto">
+                    <div>
+                        <span id="pdf-file-name" class="font-bold text-slate-700 block text-base truncate max-w-xs">파일 이름.pdf</span>
+                        <span id="pdf-page-count" class="text-xs text-slate-500">총 0 페이지</span>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200 hidden sm:block"></div>
+                    <div class="flex items-center gap-3">
+                        <label class="text-sm font-medium text-slate-600">포맷:</label>
+                        <select id="export-format" class="border border-slate-300 rounded-lg px-3 py-1.5 text-sm bg-slate-50 outline-none">
+                            <option value="image/jpeg">JPG</option>
+                            <option value="image/png">PNG</option>
+                        </select>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <label class="text-sm font-medium text-slate-600">화질:</label>
+                        <select id="export-scale" class="border border-slate-300 rounded-lg px-3 py-1.5 text-sm bg-slate-50 outline-none">
+                            <option value="1">1x (기본)</option>
+                            <option value="1.5">1.5x (선명)</option>
+                            <option value="2" selected>2x (고화질 추천)</option>
+                            <option value="3">3x (최고화질)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-3 w-full lg:w-auto justify-end">
+                    <button onclick="downloadAllIndividual()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-4 py-2.5 rounded-xl text-sm shadow-sm flex items-center gap-2">
+                        <i class="fa-solid fa-download"></i> 건별 연속 다운로드
+                    </button>
+                    <button onclick="downloadAsZip()" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-5 py-2.5 rounded-xl text-sm shadow-sm flex items-center gap-2">
+                        <i class="fa-solid fa-file-zipper"></i> ZIP 일괄 다운로드
+                    </button>
+                    <button onclick="resetPdfApp()" class="bg-slate-100 hover:bg-slate-200 text-slate-600 p-2.5 rounded-xl text-sm" title="초기화">
+                        <i class="fa-solid fa-rotate-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div id="pdf-loading" class="hidden text-center py-12">
+                <div class="inline-block animate-spin rounded-full h-10 w-10 border-4 border-blue-600 border-t-transparent"></div>
+                <p class="mt-4 text-sm font-medium text-slate-600">PDF 파일을 변환하는 중입니다...</p>
+            </div>
+
+            <div id="pdf-preview-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
+        </div>
+
+        <!-- ==================== MODE 2: Image to PDF ==================== -->
+        <div id="section-img-to-pdf" class="space-y-6 hidden">
+            <div id="img-drop-zone" class="border-2 border-dashed border-slate-300 rounded-2xl p-8 text-center bg-white hover:border-blue-500 transition-all cursor-pointer shadow-sm relative group">
+                <input type="file" id="img-file-input" accept="image/*" multiple class="absolute inset-0 opacity-0 cursor-pointer w-full h-full">
+                <div class="max-w-sm mx-auto space-y-3">
+                    <div class="w-16 h-16 bg-indigo-50 text-indigo-600 rounded-full flex items-center justify-center mx-auto text-2xl group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-images"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-700">이미지들을 올려주세요 (다중 선택 가능)</h3>
+                    <p class="text-xs text-slate-400">여러 장의 이미지를 하나의 PDF로 결합합니다</p>
+                </div>
+            </div>
+
+            <div id="img-controls" class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 hidden flex flex-col lg:flex-row justify-between items-center gap-6">
+                <div class="flex flex-wrap items-center gap-6 w-full lg:w-auto">
+                    <div>
+                        <span id="img-total-count" class="font-bold text-slate-700 block text-base">선택된 이미지: 0장</span>
+                        <span class="text-xs text-slate-400">드래그하여 순서를 바꿀 수 있습니다</span>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200 hidden sm:block"></div>
+                    <div class="flex items-center gap-3">
+                        <label class="text-sm font-medium text-slate-600">용지 규격:</label>
+                        <select id="pdf-page-size" class="border border-slate-300 rounded-lg px-3 py-1.5 text-sm bg-slate-50 outline-none">
+                            <option value="a4">A4 (표준)</option>
+                            <option value="fit">이미지 비율 맞춤</option>
+                        </select>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <label class="text-sm font-medium text-slate-600">방향:</label>
+                        <select id="pdf-orientation" class="border border-slate-300 rounded-lg px-3 py-1.5 text-sm bg-slate-50 outline-none">
+                            <option value="portrait">세로형</option>
+                            <option value="landscape">가로형</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-3 w-full lg:w-auto justify-end">
+                    <button onclick="generatePDFFromImages()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-6 py-2.5 rounded-xl text-sm shadow-sm flex items-center gap-2">
+                        <i class="fa-solid fa-file-pdf"></i> PDF 파일로 합치기
+                    </button>
+                    <button onclick="resetImgApp()" class="bg-slate-100 hover:bg-slate-200 text-slate-600 p-2.5 rounded-xl text-sm" title="초기화">
+                        <i class="fa-solid fa-rotate-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div id="img-sortable-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4"></div>
+        </div>
+
+        <!-- ==================== MODE 3: PDF Merge ==================== -->
+        <div id="section-pdf-merge" class="space-y-6 hidden">
+            <div id="merge-drop-zone" class="border-2 border-dashed border-slate-300 rounded-2xl p-8 text-center bg-white hover:border-purple-500 transition-all cursor-pointer shadow-sm relative group">
+                <input type="file" id="merge-file-input" accept="application/pdf" multiple class="absolute inset-0 opacity-0 cursor-pointer w-full h-full">
+                <div class="max-w-sm mx-auto space-y-3">
+                    <div class="w-16 h-16 bg-purple-50 text-purple-600 rounded-full flex items-center justify-center mx-auto text-2xl group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-object-group"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-700">합칠 PDF 파일들을 선택하세요 (다중 선택 가능)</h3>
+                    <p class="text-xs text-slate-400">여러 개의 PDF를 하나의 파일로 병합합니다</p>
+                </div>
+            </div>
+
+            <div id="merge-controls" class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 hidden flex justify-between items-center gap-6">
+                <div>
+                    <span id="merge-total-count" class="font-bold text-slate-700 block text-base">선택된 PDF: 0개</span>
+                    <span class="text-xs text-slate-400">마우스로 드래그하여 결합 순서를 정하세요</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button onclick="executePdfMerge()" class="bg-purple-600 hover:bg-purple-700 text-white font-semibold px-6 py-2.5 rounded-xl text-sm shadow-sm flex items-center gap-2">
+                        <i class="fa-solid fa-file-export"></i> 하나로 병합해서 다운로드
+                    </button>
+                    <button onclick="resetMergeApp()" class="bg-slate-100 hover:bg-slate-200 text-slate-600 p-2.5 rounded-xl text-sm" title="초기화">
+                        <i class="fa-solid fa-rotate-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div id="merge-sortable-list" class="space-y-3 max-w-3xl mx-auto"></div>
+        </div>
+
+        <!-- ==================== MODE 4: PDF Edit/Split ==================== -->
+        <div id="section-pdf-edit" class="space-y-6 hidden">
+            <div id="edit-drop-zone" class="border-2 border-dashed border-slate-300 rounded-2xl p-8 text-center bg-white hover:border-amber-500 transition-all cursor-pointer shadow-sm relative group">
+                <input type="file" id="edit-file-input" accept="application/pdf" class="absolute inset-0 opacity-0 cursor-pointer w-full h-full">
+                <div class="max-w-sm mx-auto space-y-3">
+                    <div class="w-16 h-16 bg-amber-50 text-amber-600 rounded-full flex items-center justify-center mx-auto text-2xl group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-scissors"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-700">편집/분할할 PDF 파일을 올려주세요</h3>
+                    <p class="text-xs text-slate-400">페이지 삭제, 순서 변경 및 특정 페이지 추출을 수행합니다</p>
+                </div>
+            </div>
+
+            <div id="edit-controls" class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 hidden flex flex-col lg:flex-row justify-between items-center gap-6">
+                <div>
+                    <span id="edit-file-name" class="font-bold text-slate-700 block text-base">파일명.pdf</span>
+                    <span id="edit-page-status" class="text-xs text-slate-500">페이지 카드를 드래그하여 순서 변경 가능 / 삭제 가능</span>
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <button onclick="saveEditedPDF()" class="bg-amber-600 hover:bg-amber-700 text-white font-semibold px-6 py-2.5 rounded-xl text-sm shadow-sm flex items-center gap-2">
+                        <i class="fa-solid fa-floppy-disk"></i> 편집된 PDF 저장하기
+                    </button>
+                    <button onclick="resetEditApp()" class="bg-slate-100 hover:bg-slate-200 text-slate-600 p-2.5 rounded-xl text-sm" title="초기화">
+                        <i class="fa-solid fa-rotate-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div id="edit-loading" class="hidden text-center py-12">
+                <div class="inline-block animate-spin rounded-full h-10 w-10 border-4 border-amber-600 border-t-transparent"></div>
+                <p class="mt-4 text-sm font-medium text-slate-600">PDF 페이지 썸네일을 불러오는 중입니다...</p>
+            </div>
+
+            <div id="edit-sortable-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4"></div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-400">
+        &copy; PDF & Image All-in-One Editor. Client-side secure processing. No data uploaded.
+    </footer>
+
+    <!-- Logic Script -->
+    <script>
+        // Tab Switcher
+        function switchMode(mode) {
+            const sections = {
+                'pdf-to-img': document.getElementById('section-pdf-to-img'),
+                'img-to-pdf': document.getElementById('section-img-to-pdf'),
+                'pdf-merge': document.getElementById('section-pdf-merge'),
+                'pdf-edit': document.getElementById('section-pdf-edit')
+            };
+
+            const tabs = {
+                'pdf-to-img': document.getElementById('tab-pdf-to-img'),
+                'img-to-pdf': document.getElementById('tab-img-to-pdf'),
+                'pdf-merge': document.getElementById('tab-pdf-merge'),
+                'pdf-edit': document.getElementById('tab-pdf-edit')
+            };
+
+            Object.keys(sections).forEach(key => {
+                if (key === mode) {
+                    sections[key].classList.remove('hidden');
+                    tabs[key].className = "px-3 py-2 font-semibold rounded-lg bg-white text-blue-600 shadow-sm transition-all flex items-center gap-1.5";
+                } else {
+                    sections[key].classList.add('hidden');
+                    tabs[key].className = "px-3 py-2 font-semibold rounded-lg text-slate-600 hover:text-slate-900 transition-all flex items-center gap-1.5";
+                }
+            });
+        }
+
+        // ================= 1. PDF to Image =================
+        let pdfDoc = null;
+        let pdfPagesData = [];
+        let loadedPdfFileName = "converted";
+
+        document.getElementById('pdf-file-input').addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            loadedPdfFileName = file.name.replace(/\.[^/.]+$/, "");
+            document.getElementById('pdf-file-name').textContent = file.name;
+            document.getElementById('pdf-loading').classList.remove('hidden');
+            document.getElementById('pdf-preview-container').innerHTML = '';
+            document.getElementById('pdf-controls').classList.add('hidden');
+
+            try {
+                const arrayBuffer = await file.arrayBuffer();
+                pdfDoc = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+                document.getElementById('pdf-page-count').textContent = `총 ${pdfDoc.numPages} 페이지`;
+                document.getElementById('pdf-loading').classList.add('hidden');
+                document.getElementById('pdf-controls').classList.remove('hidden');
+                await renderAllPdfPages();
+            } catch (err) {
+                alert('PDF 파일 로드 오류');
+                document.getElementById('pdf-loading').classList.add('hidden');
+            }
+        });
+
+        async function renderAllPdfPages() {
+            const container = document.getElementById('pdf-preview-container');
+            container.innerHTML = '';
+            pdfPagesData = [];
+
+            const format = document.getElementById('export-format').value;
+            const scale = parseFloat(document.getElementById('export-scale').value);
+            const ext = format === 'image/jpeg' ? 'jpg' : 'png';
+
+            for (let i = 1; i <= pdfDoc.numPages; i++) {
+                const page = await pdfDoc.getPage(i);
+                const viewport = page.getViewport({ scale });
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+
+                await page.render({ canvasContext: ctx, viewport }).promise;
+                const dataUrl = canvas.toDataURL(format, 0.95);
+                pdfPagesData.push({ pageNum: i, dataUrl, ext });
+
+                const card = document.createElement('div');
+                card.className = "bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm flex flex-col";
+                card.innerHTML = `
+                    <div class="bg-slate-100 p-2.5 border-b border-slate-200 flex justify-between text-xs font-semibold text-slate-600">
+                        <span>페이지 ${i}</span>
+                    </div>
+                    <div class="p-3 bg-slate-50 flex-grow flex items-center justify-center h-48 overflow-hidden">
+                        <img src="${dataUrl}" class="max-h-full max-w-full object-contain rounded border">
+                    </div>
+                    <div class="p-2.5 border-t border-slate-200 bg-white">
+                        <a href="${dataUrl}" download="${loadedPdfFileName}_p${i}.${ext}" class="w-full bg-slate-100 hover:bg-blue-50 text-slate-700 hover:text-blue-600 text-xs font-semibold py-2 rounded-xl flex items-center justify-center gap-1">
+                            <i class="fa-solid fa-download"></i> 다운로드
+                        </a>
+                    </div>
+                `;
+                container.appendChild(card);
+            }
+        }
+
+        document.getElementById('export-format').addEventListener('change', () => { if(pdfDoc) renderAllPdfPages(); });
+        document.getElementById('export-scale').addEventListener('change', () => { if(pdfDoc) renderAllPdfPages(); });
+
+        async function downloadAsZip() {
+            if (!pdfPagesData.length) return;
+            const zip = new JSZip();
+            const folder = zip.folder("images");
+            pdfPagesData.forEach(item => {
+                folder.file(`${loadedPdfFileName}_p${item.pageNum}.${item.ext}`, item.dataUrl.split(',')[1], { base64: true });
+            });
+            const blob = await zip.generateAsync({ type: "blob" });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `${loadedPdfFileName}_images.zip`;
+            link.click();
+        }
+
+        async function downloadAllIndividual() {
+            for (let item of pdfPagesData) {
+                const link = document.createElement('a');
+                link.href = item.dataUrl;
+                link.download = `${loadedPdfFileName}_p${item.pageNum}.${item.ext}`;
+                link.click();
+                await new Promise(r => setTimeout(r, 250));
+            }
+        }
+
+        function resetPdfApp() {
+            pdfDoc = null; pdfPagesData = [];
+            document.getElementById('pdf-file-input').value = '';
+            document.getElementById('pdf-preview-container').innerHTML = '';
+            document.getElementById('pdf-controls').classList.add('hidden');
+        }
+
+        // ================= 2. Image to PDF =================
+        let selectedImages = [];
+        const imgGrid = document.getElementById('img-sortable-grid');
+        new Sortable(imgGrid, { animation: 150 });
+
+        document.getElementById('img-file-input').addEventListener('change', (e) => {
+            const files = Array.from(e.target.files);
+            files.forEach(file => {
+                const reader = new FileReader();
+                reader.onload = (evt) => {
+                    selectedImages.push({ name: file.name, dataUrl: evt.target.result });
+                    renderImgGrid();
+                };
+                reader.readAsDataURL(file);
+            });
+            e.target.value = '';
+        });
+
+        function renderImgGrid() {
+            imgGrid.innerHTML = '';
+            if (selectedImages.length) document.getElementById('img-controls').classList.remove('hidden');
+            else { document.getElementById('img-controls').classList.add('hidden'); return; }
+
+            document.getElementById('img-total-count').textContent = `선택된 이미지: ${selectedImages.length}장`;
+
+            selectedImages.forEach((img, idx) => {
+                const div = document.createElement('div');
+                div.className = "bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm relative group";
+                div.innerHTML = `
+                    <button onclick="selectedImages.splice(${idx},1); renderImgGrid();" class="absolute top-2 right-2 bg-rose-500 text-white w-6 h-6 rounded-full text-xs z-10 shadow">✕</button>
+                    <div class="h-32 bg-slate-100 flex items-center justify-center p-2">
+                        <img src="${img.dataUrl}" class="max-h-full max-w-full object-contain">
+                    </div>
+                    <div class="p-2 text-center text-xs truncate bg-white border-t">${img.name}</div>
+                `;
+                imgGrid.appendChild(div);
+            });
+        }
+
+        async function generatePDFFromImages() {
+            if (!selectedImages.length) return;
+            const { jsPDF } = window.jspdf;
+            const pageSize = document.getElementById('pdf-page-size').value;
+            const orientation = document.getElementById('pdf-orientation').value;
+
+            const doc = new jsPDF({ orientation, unit: 'mm', format: 'a4' });
+
+            for (let i = 0; i < selectedImages.length; i++) {
+                if (i > 0) doc.addPage();
+                const img = new Image();
+                img.src = selectedImages[i].dataUrl;
+                await new Promise(r => img.onload = r);
+
+                const pw = doc.internal.pageSize.getWidth();
+                const ph = doc.internal.pageSize.getHeight();
+                const ratio = img.width / img.height;
+
+                let w = pw - 20, h = (pw - 20) / ratio;
+                if (h > ph - 20) { h = ph - 20; w = (ph - 20) * ratio; }
+
+                doc.addImage(selectedImages[i].dataUrl, 'JPEG', (pw - w)/2, (ph - h)/2, w, h);
+            }
+            doc.save('merged_images.pdf');
+        }
+
+        function resetImgApp() {
+            selectedImages = [];
+            imgGrid.innerHTML = '';
+            document.getElementById('img-controls').classList.add('hidden');
+        }
+
+        // ================= 3. PDF Merge =================
+        let mergeFiles = [];
+        const mergeList = document.getElementById('merge-sortable-list');
+        new Sortable(mergeList, { animation: 150 });
+
+        document.getElementById('merge-file-input').addEventListener('change', (e) => {
+            const files = Array.from(e.target.files);
+            files.forEach(f => mergeFiles.push(f));
+            renderMergeList();
+            e.target.value = '';
+        });
+
+        function renderMergeList() {
+            mergeList.innerHTML = '';
+            if (mergeFiles.length) document.getElementById('merge-controls').classList.remove('hidden');
+            else { document.getElementById('merge-controls').classList.add('hidden'); return; }
+
+            document.getElementById('merge-total-count').textContent = `선택된 PDF: ${mergeFiles.length}개`;
+
+            mergeFiles.forEach((file, idx) => {
+                const item = document.createElement('div');
+                item.className = "bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex justify-between items-center cursor-grab active:cursor-grabbing";
+                item.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <i class="fa-solid fa-grip-vertical text-slate-300"></i>
+                        <i class="fa-solid fa-file-pdf text-purple-600 text-lg"></i>
+                        <span class="font-medium text-sm text-slate-700">${file.name}</span>
+                    </div>
+                    <button onclick="mergeFiles.splice(${idx},1); renderMergeList();" class="text-rose-500 hover:bg-rose-50 p-2 rounded-lg text-sm">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                `;
+                mergeList.appendChild(item);
+            });
+        }
+
+        async function executePdfMerge() {
+            if (!mergeFiles.length) return;
+            const { PDFDocument } = PDFLib;
+            const mergedPdf = await PDFDocument.create();
+
+            for (let file of mergeFiles) {
+                const arrayBuffer = await file.arrayBuffer();
+                const pdf = await PDFDocument.load(arrayBuffer);
+                const copiedPages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
+                copiedPages.forEach(page => mergedPdf.addPage(page));
+            }
+
+            const pdfBytes = await mergedPdf.save();
+            const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'merged_document.pdf';
+            link.click();
+        }
+
+        function resetMergeApp() {
+            mergeFiles = [];
+            mergeList.innerHTML = '';
+            document.getElementById('merge-controls').classList.add('hidden');
+        }
+
+        // ================= 4. PDF Edit / Split =================
+        let rawPdfBytes = null;
+        let pdfPagesArray = []; // [{ pageIndex, dataUrl }]
+        const editGrid = document.getElementById('edit-sortable-grid');
+        new Sortable(editGrid, { animation: 150 });
+
+        document.getElementById('edit-file-input').addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            document.getElementById('edit-file-name').textContent = file.name;
+            document.getElementById('edit-loading').classList.remove('hidden');
+            document.getElementById('edit-controls').classList.add('hidden');
+            editGrid.innerHTML = '';
+            pdfPagesArray = [];
+
+            rawPdfBytes = await file.arrayBuffer();
+            const pdfDoc = await pdfjsLib.getDocument({ data: rawPdfBytes }).promise;
+
+            for (let i = 1; i <= pdfDoc.numPages; i++) {
+                const page = await pdfDoc.getPage(i);
+                const viewport = page.getViewport({ scale: 0.5 });
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+
+                await page.render({ canvasContext: ctx, viewport }).promise;
+                pdfPagesArray.push({ pageIndex: i - 1, dataUrl: canvas.toDataURL() });
+            }
+
+            document.getElementById('edit-loading').classList.add('hidden');
+            document.getElementById('edit-controls').classList.remove('hidden');
+            renderEditGrid();
+        });
+
+        function renderEditGrid() {
+            editGrid.innerHTML = '';
+            pdfPagesArray.forEach((item, idx) => {
+                const card = document.createElement('div');
+                card.className = "bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm flex flex-col relative group cursor-grab active:cursor-grabbing";
+                card.dataset.index = idx;
+                card.innerHTML = `
+                    <div class="absolute top-2 left-2 bg-slate-900/75 text-white px-2 py-0.5 rounded text-xs font-bold">${idx + 1}</div>
+                    <button onclick="pdfPagesArray.splice(${idx},1); renderEditGrid();" class="absolute top-2 right-2 bg-rose-500 text-white w-6 h-6 rounded-full text-xs shadow hover:bg-rose-600">✕</button>
+                    <div class="h-36 bg-slate-100 flex items-center justify-center p-2">
+                        <img src="${item.dataUrl}" class="max-h-full max-w-full object-contain rounded shadow-sm">
+                    </div>
+                `;
+                editGrid.appendChild(card);
+            });
+        }
+
+        async function saveEditedPDF() {
+            if (!pdfPagesArray.length || !rawPdfBytes) return;
+            const { PDFDocument } = PDFLib;
+            const srcPdf = await PDFDocument.load(rawPdfBytes);
+            const newPdf = await PDFDocument.create();
+
+            // 순서 변경된 현재 DOM 카드들의 인덱스 추출
+            const currentCards = Array.from(editGrid.children);
+            for (let card of currentCards) {
+                const idx = parseInt(card.dataset.index);
+                const pageObj = pdfPagesArray[idx];
+                const [copiedPage] = await newPdf.copyPages(srcPdf, [pageObj.pageIndex]);
+                newPdf.addPage(copiedPage);
+            }
+
+            const pdfBytes = await newPdf.save();
+            const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'edited_document.pdf';
+            link.click();
+        }
+
+        function resetEditApp() {
+            rawPdfBytes = null; pdfPagesArray = [];
+            document.getElementById('edit-file-input').value = '';
+            editGrid.innerHTML = '';
+            document.getElementById('edit-controls').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
