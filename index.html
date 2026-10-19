@@ -56,6 +56,15 @@ footer{margin-top:1rem}
 .creator-signature{color:#b66b7d!important;font-weight:700;letter-spacing:.02em}
 .creator-bichon{width:32px;height:32px;display:inline-flex;align-items:center;justify-content:center;border-radius:50%;background:#fff0f3;border:2px solid #d94762;box-shadow:0 0 0 2px #fff,0 0 0 3px #f2c4ce;padding:1px;flex-shrink:0}
 .creator-bichon svg{width:100%;height:100%;display:block}
+/* 저장 파일 이름 설정 영역을 눈에 잘 띄게 */
+.filename-box{margin:0 0 1.35rem;padding:1.15rem 1.2rem 1.25rem;border:2px solid #e85d75;border-radius:18px;background:linear-gradient(135deg,#fff0f3 0%,#fff8fa 100%);box-shadow:0 4px 14px #e85d7518}
+.filename-heading{display:flex;align-items:center;gap:.6rem;font-size:1.15rem;font-weight:900;color:#b92f4b;margin-bottom:.35rem}
+.filename-heading .filename-icon{display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:12px;background:#e85d75;color:#fff;font-size:1.05rem;flex-shrink:0}
+.filename-description{font-size:1rem!important;font-weight:650;color:#8f3348;line-height:1.65;margin:.2rem 0 .85rem}
+.filename-input{display:block!important;width:100%!important;max-width:none!important;min-height:54px;border:2px solid #e85d75!important;border-radius:12px!important;background:#fff!important;padding:.8rem 1rem!important;font-size:1.08rem!important;font-weight:750!important;color:#292b33!important;box-shadow:inset 0 1px 3px #00000008;outline:none}
+.filename-input:focus{border-color:#bd2947!important;box-shadow:0 0 0 4px #e85d7533!important}
+.filename-input-hint{font-size:.92rem!important;color:#7a4450;margin-top:.55rem;font-weight:600}
+@media(max-width:640px){.filename-box{padding:1rem}.filename-heading{font-size:1.08rem}.filename-description{font-size:.95rem!important}.filename-input{min-height:52px;font-size:1rem!important}}
 </style>
 </head>
 <body class="min-h-screen">
@@ -127,7 +136,13 @@ footer{margin-top:1rem}
       <section id="panel-pdf-to-img" class="tool-panel space-y-5">
         <div class="bg-white rounded-2xl border border-pink-100 p-5 sm:p-7">
           <h3 class="text-lg font-bold">PDF를 이미지로 변환</h3><p class="text-sm text-slate-500 mt-1 mb-5">여러 PDF를 한 번에 선택해 각 파일의 페이지를 JPG 또는 PNG로 변환해요.</p>
-          <div class="mb-5"><label for="output-name-pdf-to-img" class="block text-sm font-bold mb-2">저장 파일 이름</label><input id="output-name-pdf-to-img" class="w-full sm:max-w-md border border-slate-200 rounded-xl p-3 text-sm focus:outline-pink-400" value="PDF_이미지_변환" maxlength="100"><p class="text-xs text-slate-400 mt-1">ZIP 파일 이름으로 저장돼요. 저장 위치는 브라우저 다운로드 설정을 따라요.</p></div>
+          <div class="filename-box">
+            <div class="filename-heading"><span class="filename-icon"><i class="fa-solid fa-pen-to-square"></i></span><span>저장 파일 이름을 여기서 바꿔주세요!</span></div>
+            <p class="filename-description">아래 흰색 입력란을 클릭하고 원하는 이름을 입력하세요. 이 이름으로 결과 파일이 저장됩니다.</p>
+            <label for="output-name-pdf-to-img" class="block text-base font-extrabold text-slate-800 mb-2">✏️ 저장할 파일 이름</label>
+            <input id="output-name-pdf-to-img" class="filename-input" value="PDF_이미지_변환" maxlength="100" aria-describedby="hint-pdf-to-img">
+            <p id="hint-pdf-to-img" class="filename-input-hint">📦 결과 형식: ZIP 파일 · 파일 확장자는 자동으로 붙어요.</p>
+          </div>
           <label class="dropzone block">
             <input id="pdf-image-input" type="file" accept="application/pdf,.pdf" multiple>
             <span class="w-14 h-14 rounded-2xl bg-pink-50 text-pink-600 flex items-center justify-center text-2xl mx-auto"><i class="fa-solid fa-cloud-arrow-up"></i></span>
@@ -146,7 +161,13 @@ footer{margin-top:1rem}
       <section id="panel-img-to-pdf" class="tool-panel space-y-5">
         <div class="bg-white rounded-2xl border border-pink-100 p-5 sm:p-7">
           <h3 class="text-lg font-bold">이미지를 하나의 PDF로</h3><p class="text-sm text-slate-500 mt-1 mb-5">여러 이미지를 추가한 뒤 드래그해 순서를 바꿀 수 있습니다.</p>
-          <div class="mb-5"><label for="output-name-img-to-pdf" class="block text-sm font-bold mb-2">저장 파일 이름</label><input id="output-name-img-to-pdf" class="w-full sm:max-w-md border border-slate-200 rounded-xl p-3 text-sm focus:outline-pink-400" value="이미지_모음" maxlength="100"><p class="text-xs text-slate-400 mt-1">PDF 파일 이름으로 저장돼요. 저장 위치는 브라우저 다운로드 설정을 따라요.</p></div>
+          <div class="filename-box">
+            <div class="filename-heading"><span class="filename-icon"><i class="fa-solid fa-pen-to-square"></i></span><span>저장 파일 이름을 여기서 바꿔주세요!</span></div>
+            <p class="filename-description">아래 흰색 입력란을 클릭하고 원하는 이름을 입력하세요. 이 이름으로 결과 파일이 저장됩니다.</p>
+            <label for="output-name-img-to-pdf" class="block text-base font-extrabold text-slate-800 mb-2">✏️ 저장할 파일 이름</label>
+            <input id="output-name-img-to-pdf" class="filename-input" value="이미지_모음" maxlength="100" aria-describedby="hint-img-to-pdf">
+            <p id="hint-img-to-pdf" class="filename-input-hint">📄 결과 형식: PDF 파일 · 파일 확장자는 자동으로 붙어요.</p>
+          </div>
           <label class="dropzone block">
             <input id="images-input" type="file" accept="image/jpeg,image/png,image/webp" multiple>
             <span class="w-14 h-14 rounded-2xl bg-pink-50 text-pink-600 flex items-center justify-center text-2xl mx-auto"><i class="fa-regular fa-images"></i></span>
@@ -165,7 +186,13 @@ footer{margin-top:1rem}
       <section id="panel-pdf-merge" class="tool-panel space-y-5">
         <div class="bg-white rounded-2xl border border-pink-100 p-5 sm:p-7">
           <h3 class="text-lg font-bold">PDF 파일 병합</h3><p class="text-sm text-slate-500 mt-1 mb-5">여러 PDF를 한 파일로 합칩니다. 목록을 드래그해 순서를 바꾸세요.</p>
-          <div class="mb-5"><label for="output-name-pdf-merge" class="block text-sm font-bold mb-2">저장 파일 이름</label><input id="output-name-pdf-merge" class="w-full sm:max-w-md border border-slate-200 rounded-xl p-3 text-sm focus:outline-pink-400" value="합쳐진_PDF" maxlength="100"><p class="text-xs text-slate-400 mt-1">PDF 파일 이름으로 저장돼요. 저장 위치는 브라우저 다운로드 설정을 따라요.</p></div>
+          <div class="filename-box">
+            <div class="filename-heading"><span class="filename-icon"><i class="fa-solid fa-pen-to-square"></i></span><span>저장 파일 이름을 여기서 바꿔주세요!</span></div>
+            <p class="filename-description">아래 흰색 입력란을 클릭하고 원하는 이름을 입력하세요. 이 이름으로 결과 파일이 저장됩니다.</p>
+            <label for="output-name-pdf-merge" class="block text-base font-extrabold text-slate-800 mb-2">✏️ 저장할 파일 이름</label>
+            <input id="output-name-pdf-merge" class="filename-input" value="합쳐진_PDF" maxlength="100" aria-describedby="hint-pdf-merge">
+            <p id="hint-pdf-merge" class="filename-input-hint">📄 결과 형식: PDF 파일 · 파일 확장자는 자동으로 붙어요.</p>
+          </div>
           <label class="dropzone block">
             <input id="merge-input" type="file" accept="application/pdf,.pdf" multiple>
             <span class="w-14 h-14 rounded-2xl bg-pink-50 text-pink-600 flex items-center justify-center text-2xl mx-auto"><i class="fa-solid fa-layer-group"></i></span>
@@ -178,7 +205,13 @@ footer{margin-top:1rem}
       <section id="panel-pdf-edit" class="tool-panel space-y-5">
         <div class="bg-white rounded-2xl border border-pink-100 p-5 sm:p-7">
           <h3 class="text-lg font-bold">PDF 페이지 편집</h3><p class="text-sm text-slate-500 mt-1 mb-5">페이지를 미리 보고 삭제하거나 드래그해 순서를 바꾸세요.</p>
-          <div class="mb-5"><label for="output-name-pdf-edit" class="block text-sm font-bold mb-2">저장 파일 이름</label><input id="output-name-pdf-edit" class="w-full sm:max-w-md border border-slate-200 rounded-xl p-3 text-sm focus:outline-pink-400" value="편집한_PDF" maxlength="100"><p class="text-xs text-slate-400 mt-1">PDF 파일 이름으로 저장돼요. 저장 위치는 브라우저 다운로드 설정을 따라요.</p></div>
+          <div class="filename-box">
+            <div class="filename-heading"><span class="filename-icon"><i class="fa-solid fa-pen-to-square"></i></span><span>저장 파일 이름을 여기서 바꿔주세요!</span></div>
+            <p class="filename-description">아래 흰색 입력란을 클릭하고 원하는 이름을 입력하세요. 이 이름으로 결과 파일이 저장됩니다.</p>
+            <label for="output-name-pdf-edit" class="block text-base font-extrabold text-slate-800 mb-2">✏️ 저장할 파일 이름</label>
+            <input id="output-name-pdf-edit" class="filename-input" value="편집한_PDF" maxlength="100" aria-describedby="hint-pdf-edit">
+            <p id="hint-pdf-edit" class="filename-input-hint">📄 결과 형식: PDF 파일 · 파일 확장자는 자동으로 붙어요.</p>
+          </div>
           <label class="dropzone block">
             <input id="edit-input" type="file" accept="application/pdf,.pdf">
             <span class="w-14 h-14 rounded-2xl bg-pink-50 text-pink-600 flex items-center justify-center text-2xl mx-auto"><i class="fa-solid fa-scissors"></i></span>
@@ -191,7 +224,13 @@ footer{margin-top:1rem}
       <section id="panel-pdf-split" class="tool-panel space-y-5">
         <div class="bg-white rounded-2xl border border-pink-100 p-5 sm:p-7">
           <h3 class="text-lg font-bold">PDF 페이지 분할</h3><p class="text-sm text-slate-500 mt-1 mb-5">페이지 범위를 입력해 여러 PDF로 나누고 ZIP 파일로 다운로드합니다.</p>
-          <div class="mb-5"><label for="output-name-pdf-split" class="block text-sm font-bold mb-2">저장 파일 이름</label><input id="output-name-pdf-split" class="w-full sm:max-w-md border border-slate-200 rounded-xl p-3 text-sm focus:outline-pink-400" value="분할한_PDF" maxlength="100"><p class="text-xs text-slate-400 mt-1">ZIP 파일 이름으로 저장돼요. ZIP 안의 개별 PDF에는 페이지 범위가 표시돼요.</p></div>
+          <div class="filename-box">
+            <div class="filename-heading"><span class="filename-icon"><i class="fa-solid fa-pen-to-square"></i></span><span>저장 파일 이름을 여기서 바꿔주세요!</span></div>
+            <p class="filename-description">아래 흰색 입력란을 클릭하고 원하는 이름을 입력하세요. 이 이름으로 결과 파일이 저장됩니다.</p>
+            <label for="output-name-pdf-split" class="block text-base font-extrabold text-slate-800 mb-2">✏️ 저장할 파일 이름</label>
+            <input id="output-name-pdf-split" class="filename-input" value="분할한_PDF" maxlength="100" aria-describedby="hint-pdf-split">
+            <p id="hint-pdf-split" class="filename-input-hint">📦 결과 형식: ZIP 파일 · ZIP 안의 개별 PDF에는 페이지 범위가 표시돼요.</p>
+          </div>
           <label class="dropzone block">
             <input id="split-input" type="file" accept="application/pdf,.pdf">
             <span class="w-14 h-14 rounded-2xl bg-pink-50 text-pink-600 flex items-center justify-center text-2xl mx-auto"><i class="fa-solid fa-file-circle-minus"></i></span>
@@ -257,7 +296,8 @@ footer{margin-top:1rem}
 
   const toolNames = {'pdf-to-img':'PDF를 이미지로 변환','img-to-pdf':'이미지를 PDF로 변환','pdf-merge':'PDF 파일 합치기','pdf-edit':'PDF 페이지 편집','pdf-split':'PDF 페이지 나누기'};
   function switchMode(mode) {
-    $('home-panel').style.display = 'none';$('tool-view').classList.add('show');
+    $('home-panel').style.display = 'none';
+    $('tool-view').classList.add('show');
     document.querySelectorAll('.tool-panel').forEach(panel => panel.classList.toggle('active', panel.id === `panel-${mode}`));
     $('active-tool-title').textContent = toolNames[mode] || 'PDF 작업';
     clearStatus();
