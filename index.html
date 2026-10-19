@@ -56,15 +56,15 @@ footer{margin-top:1rem}
 .creator-signature{color:#b66b7d!important;font-weight:700;letter-spacing:.02em}
 .creator-bichon{width:32px;height:32px;display:inline-flex;align-items:center;justify-content:center;border-radius:50%;background:#fff0f3;border:2px solid #d94762;box-shadow:0 0 0 2px #fff,0 0 0 3px #f2c4ce;padding:1px;flex-shrink:0}
 .creator-bichon svg{width:100%;height:100%;display:block}
-/* 저장 파일 이름 설정 영역을 눈에 잘 띄게 */
-.filename-box{margin:0 0 1.35rem;padding:1.15rem 1.2rem 1.25rem;border:2px solid #e85d75;border-radius:18px;background:linear-gradient(135deg,#fff0f3 0%,#fff8fa 100%);box-shadow:0 4px 14px #e85d7518}
-.filename-heading{display:flex;align-items:center;gap:.6rem;font-size:1.15rem;font-weight:900;color:#b92f4b;margin-bottom:.35rem}
-.filename-heading .filename-icon{display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:12px;background:#e85d75;color:#fff;font-size:1.05rem;flex-shrink:0}
-.filename-description{font-size:1rem!important;font-weight:650;color:#8f3348;line-height:1.65;margin:.2rem 0 .85rem}
-.filename-input{display:block!important;width:100%!important;max-width:none!important;min-height:54px;border:2px solid #e85d75!important;border-radius:12px!important;background:#fff!important;padding:.8rem 1rem!important;font-size:1.08rem!important;font-weight:750!important;color:#292b33!important;box-shadow:inset 0 1px 3px #00000008;outline:none}
-.filename-input:focus{border-color:#bd2947!important;box-shadow:0 0 0 4px #e85d7533!important}
-.filename-input-hint{font-size:.92rem!important;color:#7a4450;margin-top:.55rem;font-weight:600}
-@media(max-width:640px){.filename-box{padding:1rem}.filename-heading{font-size:1.08rem}.filename-description{font-size:.95rem!important}.filename-input{min-height:52px;font-size:1rem!important}}
+/* 저장 파일 이름 설정 영역: 다른 기능을 가리지 않도록 은은하게 강조 */
+.filename-box{margin:0 0 1.25rem;padding:1rem 1.1rem 1.05rem;border:1px solid #efc5cf;border-radius:14px;background:#fff9fa;box-shadow:0 2px 7px #44202a08}
+.filename-heading{display:flex;align-items:center;gap:.55rem;font-size:1.04rem;font-weight:800;color:#8f4053;margin-bottom:.3rem}
+.filename-heading .filename-icon{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:9px;background:#f7dce3;color:#a94d64;font-size:.9rem;flex-shrink:0}
+.filename-description{font-size:.94rem!important;font-weight:500;color:#66525a;line-height:1.6;margin:.2rem 0 .7rem}
+.filename-input{display:block!important;width:100%!important;max-width:none!important;min-height:48px;border:1.5px solid #dca6b4!important;border-radius:9px!important;background:#fff!important;padding:.7rem .9rem!important;font-size:1rem!important;font-weight:600!important;color:#292b33!important;box-shadow:inset 0 1px 2px #00000005;outline:none}
+.filename-input:focus{border-color:#c7798e!important;box-shadow:0 0 0 3px #e9bdc933!important}
+.filename-input-hint{font-size:.86rem!important;color:#79616a;margin-top:.45rem;font-weight:500}
+@media(max-width:640px){.filename-box{padding:.9rem}.filename-heading{font-size:1rem}.filename-description{font-size:.9rem!important}.filename-input{min-height:46px;font-size:.96rem!important}}
 </style>
 </head>
 <body class="min-h-screen">
@@ -141,7 +141,12 @@ footer{margin-top:1rem}
             <p class="filename-description">아래 흰색 입력란을 클릭하고 원하는 이름을 입력하세요. 이 이름으로 결과 파일이 저장됩니다.</p>
             <label for="output-name-pdf-to-img" class="block text-base font-extrabold text-slate-800 mb-2">✏️ 저장할 파일 이름</label>
             <input id="output-name-pdf-to-img" class="filename-input" value="PDF_이미지_변환" maxlength="100" aria-describedby="hint-pdf-to-img">
-            <p id="hint-pdf-to-img" class="filename-input-hint">📦 결과 형식: ZIP 파일 · 파일 확장자는 자동으로 붙어요.</p>
+            <p id="hint-pdf-to-img" class="filename-input-hint">파일 이름은 아래 저장 방식에 따라 적용돼요.</p>
+          </div>
+          <div class="rounded-2xl border-2 border-pink-200 bg-pink-50 p-4 mb-4">
+            <p class="font-extrabold text-pink-800 mb-2"><i class="fa-solid fa-folder-open mr-1"></i> 이미지 저장 방식 선택</p>
+            <label class="flex items-start gap-2 p-2 rounded-lg bg-white mb-2"><input type="radio" name="image-save-mode" value="individual" checked class="mt-1 accent-pink-600"><span><strong>JPG/PNG 파일을 각각 따로 저장</strong><span class="block text-sm text-slate-600">사진 파일이 하나씩 저장돼요. 여러 파일 다운로드를 허용하라는 안내가 뜨면 허용해 주세요.</span></span></label>
+            <label class="flex items-start gap-2 p-2 rounded-lg bg-white"><input type="radio" name="image-save-mode" value="zip" class="mt-1 accent-pink-600"><span><strong>ZIP 파일 하나로 저장</strong><span class="block text-sm text-slate-600">PDF별 폴더로 정리해서 한 번에 받아요.</span></span></label>
           </div>
           <label class="dropzone block">
             <input id="pdf-image-input" type="file" accept="application/pdf,.pdf" multiple>
@@ -316,7 +321,7 @@ footer{margin-top:1rem}
     clearStatus();
     $('pdf-image-preview').innerHTML = '';$('pdf-image-info').classList.remove('hidden');
     $('pdf-image-options').classList.remove('hidden');$('pdf-image-info').textContent = `선택한 PDF ${currentPdfFiles.length}개 · 각 PDF의 모든 페이지를 개별 이미지로 변환합니다.`;
-    status('파일을 확인했어요. 변환 버튼을 누르면 PDF별 이미지가 ZIP 파일 하나에 정리돼요.');
+    status('파일을 확인했어요. 저장 방식을 선택한 뒤 변환 버튼을 눌러 주세요.');
   });
 
   $('convert-images').addEventListener('click', async e => {
@@ -324,7 +329,8 @@ footer{margin-top:1rem}
     if (!currentPdfFiles.length) { status('PDF 파일을 하나 이상 선택해 주세요.', true); return; }
     setBusy(btn, true, 'PDF 파일 변환 중...');
     try {
-      const zip = new JSZip();
+      const saveMode = document.querySelector('input[name="image-save-mode"]:checked')?.value || 'individual';
+      const zip = saveMode === 'zip' ? new JSZip() : null;
       const fmt = $('image-format').value;
       const scale = Number($('image-scale').value);
       const ext = fmt === 'image/png' ? 'png' : 'jpg';
@@ -337,7 +343,7 @@ footer{margin-top:1rem}
         status(`변환 중: ${fileIndex + 1}/${currentPdfFiles.length} · ${file.name}`);
         const pdf = await pdfjsLib.getDocument({ data: await file.arrayBuffer() }).promise;
         const folderName = safeName(file.name);
-        const folder = zip.folder(folderName);
+        const folder = zip ? zip.folder(folderName) : null;
 
         for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
           const page = await pdf.getPage(pageNum);
@@ -351,7 +357,14 @@ footer{margin-top:1rem}
           if (!blob) throw new Error(`${file.name} ${pageNum}페이지 이미지 생성에 실패했습니다.`);
 
           const pageName = `${folderName}_page-${String(pageNum).padStart(3, '0')}.${ext}`;
-          folder.file(pageName, blob);
+          if (folder) {
+            folder.file(pageName, blob);
+          } else {
+            const customBase = outputName('output-name-pdf-to-img', 'PDF_이미지_변환');
+            const fileBase = currentPdfFiles.length === 1 ? customBase : `${customBase}_${folderName}`;
+            downloadBlob(blob, `${fileBase}_page-${String(pageNum).padStart(3, '0')}.${ext}`);
+            await new Promise(resolve => setTimeout(resolve, 180));
+          }
           totalPages++;
 
           if (totalPages <= 6) {
@@ -366,9 +379,13 @@ footer{margin-top:1rem}
         }
       }
 
-      const zipBlob = await zip.generateAsync({ type: 'blob' });
-      downloadBlob(zipBlob, `${outputName('output-name-pdf-to-img','PDF_이미지_변환')}.zip`);
-      status(`완료! PDF ${currentPdfFiles.length}개, 총 ${totalPages}페이지를 ${ext.toUpperCase()} 이미지로 변환했어요. ZIP 안에 PDF별 폴더로 정리했어요.`);
+      if (saveMode === 'zip') {
+        const zipBlob = await zip.generateAsync({ type: 'blob' });
+        downloadBlob(zipBlob, `${outputName('output-name-pdf-to-img','PDF_이미지_변환')}.zip`);
+        status(`완료! PDF ${currentPdfFiles.length}개, 총 ${totalPages}페이지를 ${ext.toUpperCase()}로 변환해 ZIP 파일에 정리했어요.`);
+      } else {
+        status(`완료! PDF ${currentPdfFiles.length}개, 총 ${totalPages}페이지를 ${ext.toUpperCase()} 이미지 파일로 각각 저장하도록 요청했어요. 다운로드가 차단되면 브라우저에서 여러 파일 다운로드를 허용해 주세요.`);
+      }
       $('pdf-image-info').textContent = `변환 완료 · PDF ${currentPdfFiles.length}개 · 총 ${totalPages}페이지`;
     } catch (err) {
       status('변환 중 오류가 발생했어요: ' + err.message, true);
