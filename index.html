@@ -57,6 +57,7 @@ footer{margin-top:1rem}
 .creator-signature{color:#b66b7d!important;font-weight:700;letter-spacing:.02em}
 .creator-bichon{width:32px;height:32px;display:inline-flex;align-items:center;justify-content:center;border-radius:50%;background:#fff0f3;border:2px solid #d94762;box-shadow:0 0 0 2px #fff,0 0 0 3px #f2c4ce;padding:1px;flex-shrink:0}
 .creator-bichon svg{width:100%;height:100%;display:block}
+/* 저장 파일 이름 설정 영역: 다른 기능을 가리지 않도록 은은하게 강조 */
 .filename-box{margin:0 0 1.25rem;padding:1rem 1.1rem 1.05rem;border:1px solid #efc5cf;border-radius:14px;background:#fff9fa;box-shadow:0 2px 7px #44202a08}
 .filename-heading{display:flex;align-items:center;gap:.55rem;font-size:1.04rem;font-weight:800;color:#8f4053;margin-bottom:.3rem}
 .filename-heading .filename-icon{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:9px;background:#f7dce3;color:#a94d64;font-size:.9rem;flex-shrink:0}
@@ -65,6 +66,7 @@ footer{margin-top:1rem}
 .filename-input:focus{border-color:#c7798e!important;box-shadow:0 0 0 3px #e9bdc933!important}
 .filename-input-hint{font-size:.86rem!important;color:#79616a;margin-top:.45rem;font-weight:500}
 @media(max-width:640px){.filename-box{padding:.9rem}.filename-heading{font-size:1rem}.filename-description{font-size:.9rem!important}.filename-input{min-height:46px;font-size:.96rem!important}}
+
 </style>
 </head>
 <body class="min-h-screen">
@@ -107,50 +109,32 @@ footer{margin-top:1rem}
       <button type="button" class="tool-card" data-mode="pdf-split"><span class="tool-card-icon" style="background:#eaf8f0;color:#329667"><i class="fa-solid fa-file-circle-minus"></i></span><span class="tool-card-title">PDF 나누기</span><span class="tool-card-desc">페이지 범위를 지정해 여러 개의 PDF로 나누고 ZIP으로 받아요.</span><span class="tool-card-arrow">기능 열기 <i class="fa-solid fa-arrow-right ml-1"></i></span></button>
       <button type="button" class="tool-card" data-mode="pdf-page-number"><span class="tool-card-icon" style="background:#fff4e8;color:#c98429"><i class="fa-solid fa-list-ol"></i></span><span class="tool-card-title">PDF 페이지 번호</span><span class="tool-card-desc">페이지 하단에 번호를 넣고 위치, 크기, 글꼴을 선택해요.</span><span class="tool-card-arrow">기능 열기 <i class="fa-solid fa-arrow-right ml-1"></i></span></button>
       <button type="button" class="tool-card" data-mode="pdf-protect"><span class="tool-card-icon" style="background:#eef4ff;color:#5579c7"><i class="fa-solid fa-lock"></i></span><span class="tool-card-title">PDF 비밀번호 보호</span><span class="tool-card-desc">비밀번호를 설정해 파일을 열 때 암호를 요구하도록 해요.</span><span class="tool-card-arrow">기능 열기 <i class="fa-solid fa-arrow-right ml-1"></i></span></button>
-      <div class="rounded-3xl border border-dashed border-pink-200 bg-white/70 p-6 flex flex-col justify-center min-h-[190px]">
-        <div class="w-16 h-16 mb-3 rounded-2xl bg-pink-50 flex items-center justify-center">
-          <svg viewBox="0 0 100 100" class="w-14 h-14" role="img" aria-label="귀여운 비숑 프리제">
-            <g fill="#fff" stroke="#e8dfe2" stroke-width="1.7">
-              <circle cx="50" cy="19" r="12"/><circle cx="34" cy="22" r="12"/><circle cx="66" cy="22" r="12"/>
-              <circle cx="23" cy="34" r="12"/><circle cx="77" cy="34" r="12"/><circle cx="18" cy="49" r="11"/><circle cx="82" cy="49" r="11"/>
-              <circle cx="23" cy="64" r="12"/><circle cx="77" cy="64" r="12"/><circle cx="35" cy="77" r="12"/><circle cx="65" cy="77" r="12"/><circle cx="50" cy="81" r="12"/>
-              <circle cx="35" cy="37" r="13"/><circle cx="65" cy="37" r="13"/><circle cx="50" cy="32" r="14"/><circle cx="33" cy="52" r="14"/><circle cx="67" cy="52" r="14"/><circle cx="50" cy="56" r="22"/>
-            </g>
-            <ellipse cx="37" cy="48" rx="3.6" ry="4.5" fill="#34313a"/><ellipse cx="63" cy="48" rx="3.6" ry="4.5" fill="#34313a"/>
-            <ellipse cx="27" cy="58" rx="5" ry="3.5" fill="#ffbdcb"/><ellipse cx="73" cy="58" rx="5" ry="3.5" fill="#ffbdcb"/>
-            <path d="M45 57q5-6 10 0q-1 6-5 6t-5-6z" fill="#34313a"/><path d="M50 63v4m0 0q-5 4-9-1m9 1q5 4 9-1" fill="none" stroke="#34313a" stroke-width="2.2" stroke-linecap="round"/>
-            <path d="M62 17l7-8 2 9 8 3-8 4-2 8-5-7-8-1 6-4z" fill="#ff9db3" stroke="#e85d75" stroke-width="1.2"/>
-          </svg>
-        </div>
-        <p class="font-extrabold text-slate-700 text-lg">간단하게, 안전하게</p>
-        <p class="text-sm text-slate-500 mt-2 leading-relaxed">파일을 서버로 보내지 않고 브라우저에서 처리해요. 작업이 끝나면 결과 파일을 내려받으세요.</p>
-      </div>
+      <button type="button" class="tool-card" data-mode="pdf-compare"><span class="tool-card-icon" style="background:#eaf8f0;color:#329667"><i class="fa-solid fa-code-compare"></i></span><span class="tool-card-title">PDF 비교</span><span class="tool-card-desc">두 PDF를 나란히 보고 페이지별 텍스트 차이를 확인해요.</span><span class="tool-card-arrow">기능 열기 <i class="fa-solid fa-arrow-right ml-1"></i></span></button>
+      <button type="button" class="tool-card" data-mode="pdf-crop"><span class="tool-card-icon" style="background:#fff0f5;color:#cc5f8b"><i class="fa-solid fa-crop-simple"></i></span><span class="tool-card-title">PDF 자르기</span><span class="tool-card-desc">미리 보기에서 영역을 선택해 한 페이지 또는 전체 페이지를 잘라요.</span><span class="tool-card-arrow">기능 열기 <i class="fa-solid fa-arrow-right ml-1"></i></span></button>
+      <div class="rounded-3xl border border-dashed border-pink-200 bg-white/70 p-6 flex flex-col justify-center min-h-[190px]"><div class="w-16 h-16 mb-3 rounded-2xl bg-pink-50 flex items-center justify-center">
+      <svg viewBox="0 0 100 100" class="w-14 h-14" role="img" aria-label="귀여운 비숑 프리제">
+        <g fill="#fff" stroke="#e8dfe2" stroke-width="1.7">
+          <circle cx="50" cy="19" r="12"/><circle cx="34" cy="22" r="12"/><circle cx="66" cy="22" r="12"/>
+          <circle cx="23" cy="34" r="12"/><circle cx="77" cy="34" r="12"/><circle cx="18" cy="49" r="11"/><circle cx="82" cy="49" r="11"/>
+          <circle cx="23" cy="64" r="12"/><circle cx="77" cy="64" r="12"/><circle cx="35" cy="77" r="12"/><circle cx="65" cy="77" r="12"/><circle cx="50" cy="81" r="12"/>
+          <circle cx="35" cy="37" r="13"/><circle cx="65" cy="37" r="13"/><circle cx="50" cy="32" r="14"/><circle cx="33" cy="52" r="14"/><circle cx="67" cy="52" r="14"/><circle cx="50" cy="56" r="22"/>
+        </g>
+        <ellipse cx="37" cy="48" rx="3.6" ry="4.5" fill="#34313a"/><ellipse cx="63" cy="48" rx="3.6" ry="4.5" fill="#34313a"/>
+        <ellipse cx="27" cy="58" rx="5" ry="3.5" fill="#ffbdcb"/><ellipse cx="73" cy="58" rx="5" ry="3.5" fill="#ffbdcb"/>
+        <path d="M45 57q5-6 10 0q-1 6-5 6t-5-6z" fill="#34313a"/><path d="M50 63v4m0 0q-5 4-9-1m9 1q5 4 9-1" fill="none" stroke="#34313a" stroke-width="2.2" stroke-linecap="round"/>
+        <path d="M62 17l7-8 2 9 8 3-8 4-2 8-5-7-8-1 6-4z" fill="#ff9db3" stroke="#e85d75" stroke-width="1.2"/>
+      </svg>
+      </div><p class="font-extrabold text-slate-700 text-lg">간단하게, 안전하게</p><p class="text-sm text-slate-500 mt-2 leading-relaxed">파일을 서버로 보내지 않고 브라우저에서 처리해요. 작업이 끝나면 결과 파일을 내려받으세요.</p></div>
     </div>
     <p class="text-xs text-slate-400 mt-8 text-center">비숑 PDF 도구 · 파일은 브라우저에서 처리됩니다.</p>
   </section>
-
   <section id="tool-view">
-    <div class="flex flex-wrap items-center gap-3 mb-5">
-      <button id="back-home" type="button" class="secondary back-home-button"><i class="fa-solid fa-arrow-left"></i><span class="bichon-mini" aria-hidden="true"><svg viewBox="0 0 100 100"><path d="M50 9c-8 0-13 5-17 10-10-3-19 5-20 15-7 6-9 16-4 24-3 10 3 21 11 24 5 9 14 12 23 8 5 5 15 5 20 0 9 4 18 1 23-8 8-3 14-14 11-24 5-8 3-18-4-24-1-10-10-18-20-15C65 14 58 9 50 9z" fill="#fff" stroke="#39323a" stroke-width="5" stroke-linejoin="round"/><path d="M29 36q-5-7 2-10m40 0q7 3 2 10" fill="none" stroke="#e7dce0" stroke-width="5" stroke-linecap="round"/><ellipse cx="37" cy="47" rx="4.5" ry="5.5" fill="#29252b"/><ellipse cx="63" cy="47" rx="4.5" ry="5.5" fill="#29252b"/><ellipse cx="27" cy="58" rx="6" ry="4" fill="#ffb5c5"/><ellipse cx="73" cy="58" rx="6" ry="4" fill="#ffb5c5"/><path d="M44 56q6-7 12 0q-1 6-6 6t-6-6z" fill="#29252b"/><path d="M50 62v5m0 0q-5 4-9-1m9 1q5 4 9-1" fill="none" stroke="#29252b" stroke-width="3" stroke-linecap="round"/><path d="M68 18l4-7 3 8 8 3-8 3-3 8-4-7-8-2z" fill="#ffb5c5" stroke="#d94762" stroke-width="2"/></svg></span>기능 목록</button>
-      <div><p class="text-xs font-bold text-pink-500">비숑 PDF 도구</p><h2 id="active-tool-title" class="text-xl sm:text-2xl font-extrabold mt-1">PDF 작업</h2></div>
-    </div>
-    
-    <div class="space-y-5">
-      <section id="panel-pdf-to-img" class="tool-panel space-y-5">
+    <div class="flex flex-wrap items-center gap-3 mb-5"><button id="back-home" type="button" class="secondary back-home-button"><i class="fa-solid fa-arrow-left"></i><span class="bichon-mini" aria-hidden="true"><svg viewBox="0 0 100 100"><path d="M50 9c-8 0-13 5-17 10-10-3-19 5-20 15-7 6-9 16-4 24-3 10 3 21 11 24 5 9 14 12 23 8 5 5 15 5 20 0 9 4 18 1 23-8 8-3 14-14 11-24 5-8 3-18-4-24-1-10-10-18-20-15C65 14 58 9 50 9z" fill="#fff" stroke="#39323a" stroke-width="5" stroke-linejoin="round"/><path d="M29 36q-5-7 2-10m40 0q7 3 2 10" fill="none" stroke="#e7dce0" stroke-width="5" stroke-linecap="round"/><ellipse cx="37" cy="47" rx="4.5" ry="5.5" fill="#29252b"/><ellipse cx="63" cy="47" rx="4.5" ry="5.5" fill="#29252b"/><ellipse cx="27" cy="58" rx="6" ry="4" fill="#ffb5c5"/><ellipse cx="73" cy="58" rx="6" ry="4" fill="#ffb5c5"/><path d="M44 56q6-7 12 0q-1 6-6 6t-6-6z" fill="#29252b"/><path d="M50 62v5m0 0q-5 4-9-1m9 1q5 4 9-1" fill="none" stroke="#29252b" stroke-width="3" stroke-linecap="round"/><path d="M68 18l4-7 3 8 8 3-8 3-3 8-4-7-8-2z" fill="#ffb5c5" stroke="#d94762" stroke-width="2"/></svg></span>기능 목록</button><div><p class="text-xs font-bold text-pink-500">비숑 PDF 도구</p><h2 id="active-tool-title" class="text-xl sm:text-2xl font-extrabold mt-1">PDF 작업</h2></div></div>
+    <div class="space-y-5"><section id="panel-pdf-to-img" class="tool-panel space-y-5">
         <div class="bg-white rounded-2xl border border-pink-100 p-5 sm:p-7">
           <h3 class="text-lg font-bold">PDF를 이미지로 변환</h3><p class="text-sm text-slate-500 mt-1 mb-5">여러 PDF를 한 번에 선택해 각 파일의 페이지를 JPG 또는 PNG로 변환해요.</p>
-          <div class="filename-box">
-            <div class="filename-heading"><span class="filename-icon"><i class="fa-solid fa-pen-to-square"></i></span><span>저장 파일 이름을 여기서 바꿔주세요!</span></div>
-            <p class="filename-description">아래 흰색 입력란을 클릭하고 원하는 이름을 입력하세요. 이 이름으로 결과 파일이 저장됩니다.</p>
-            <label for="output-name-pdf-to-img" class="block text-base font-extrabold text-slate-800 mb-2">✏️ 저장할 파일 이름</label>
-            <input id="output-name-pdf-to-img" class="filename-input" value="PDF_이미지_변환" maxlength="100" aria-describedby="hint-pdf-to-img">
-            <p id="hint-pdf-to-img" class="filename-input-hint">파일 이름은 아래 저장 방식에 따라 적용돼요.</p>
-          </div>
-          <div class="rounded-2xl border-2 border-pink-200 bg-pink-50 p-4 mb-4">
-            <p class="font-extrabold text-pink-800 mb-2"><i class="fa-solid fa-folder-open mr-1"></i> 이미지 저장 방식 선택</p>
-            <label class="flex items-start gap-2 p-2 rounded-lg bg-white mb-2"><input type="radio" name="image-save-mode" value="individual" checked class="mt-1 accent-pink-600"><span><strong>JPG/PNG 파일을 각각 따로 저장</strong><span class="block text-sm text-slate-600">사진 파일이 하나씩 저장돼요. 여러 파일 다운로드를 허용하라는 안내가 뜨면 허용해 주세요.</span></span></label>
-            <label class="flex items-start gap-2 p-2 rounded-lg bg-white"><input type="radio" name="image-save-mode" value="zip" class="mt-1 accent-pink-600"><span><strong>ZIP 파일 하나로 저장</strong><span class="block text-sm text-slate-600">PDF별 폴더로 정리해서 한 번에 받아요.</span></span></label>
-          </div>
+          <div class="filename-box"><div class="filename-heading"><span class="filename-icon"><i class="fa-solid fa-pen-to-square"></i></span><span>저장 파일 이름을 여기서 바꿔주세요!</span></div><p class="filename-description">아래 흰색 입력란을 클릭하고 원하는 이름을 입력하세요. 이 이름으로 결과 파일이 저장됩니다.</p><label for="output-name-pdf-to-img" class="block text-base font-extrabold text-slate-800 mb-2">✏️ 저장할 파일 이름</label><input id="output-name-pdf-to-img" class="filename-input" value="PDF_이미지_변환" maxlength="100" aria-describedby="hint-pdf-to-img"><p id="hint-pdf-to-img" class="filename-input-hint">파일 이름은 아래 저장 방식에 따라 적용돼요.</p></div>
+          <div class="rounded-2xl border-2 border-pink-200 bg-pink-50 p-4 mb-4"><p class="font-extrabold text-pink-800 mb-2"><i class="fa-solid fa-folder-open mr-1"></i> 이미지 저장 방식 선택</p><label class="flex items-start gap-2 p-2 rounded-lg bg-white mb-2"><input type="radio" name="image-save-mode" value="individual" checked class="mt-1 accent-pink-600"><span><strong>JPG/PNG 파일을 각각 따로 저장</strong><span class="block text-sm text-slate-600">사진 파일이 하나씩 저장돼요. 여러 파일 다운로드를 허용하라는 안내가 뜨면 허용해 주세요.</span></span></label><label class="flex items-start gap-2 p-2 rounded-lg bg-white"><input type="radio" name="image-save-mode" value="zip" class="mt-1 accent-pink-600"><span><strong>ZIP 파일 하나로 저장</strong><span class="block text-sm text-slate-600">PDF별 폴더로 정리해서 한 번에 받아요.</span></span></label></div>
           <label class="dropzone block">
             <input id="pdf-image-input" type="file" accept="application/pdf,.pdf" multiple>
             <span class="w-14 h-14 rounded-2xl bg-pink-50 text-pink-600 flex items-center justify-center text-2xl mx-auto"><i class="fa-solid fa-cloud-arrow-up"></i></span>
@@ -165,17 +149,10 @@ footer{margin-top:1rem}
           <div id="pdf-image-preview" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 mt-5"></div>
         </div>
       </section>
-
-      <section id="panel-img-to-pdf" class="tool-panel space-y-5">
+<section id="panel-img-to-pdf" class="tool-panel space-y-5">
         <div class="bg-white rounded-2xl border border-pink-100 p-5 sm:p-7">
           <h3 class="text-lg font-bold">이미지를 하나의 PDF로</h3><p class="text-sm text-slate-500 mt-1 mb-5">여러 이미지를 추가한 뒤 드래그해 순서를 바꿀 수 있습니다.</p>
-          <div class="filename-box">
-            <div class="filename-heading"><span class="filename-icon"><i class="fa-solid fa-pen-to-square"></i></span><span>저장 파일 이름을 여기서 바꿔주세요!</span></div>
-            <p class="filename-description">아래 흰색 입력란을 클릭하고 원하는 이름을 입력하세요. 이 이름으로 결과 파일이 저장됩니다.</p>
-            <label for="output-name-img-to-pdf" class="block text-base font-extrabold text-slate-800 mb-2">✏️ 저장할 파일 이름</label>
-            <input id="output-name-img-to-pdf" class="filename-input" value="이미지_모음" maxlength="100" aria-describedby="hint-img-to-pdf">
-            <p id="hint-img-to-pdf" class="filename-input-hint">📄 결과 형식: PDF 파일 · 파일 확장자는 자동으로 붙어요.</p>
-          </div>
+          <div class="filename-box"><div class="filename-heading"><span class="filename-icon"><i class="fa-solid fa-pen-to-square"></i></span><span>저장 파일 이름을 여기서 바꿔주세요!</span></div><p class="filename-description">아래 흰색 입력란을 클릭하고 원하는 이름을 입력하세요. 이 이름으로 결과 파일이 저장됩니다.</p><label for="output-name-img-to-pdf" class="block text-base font-extrabold text-slate-800 mb-2">✏️ 저장할 파일 이름</label><input id="output-name-img-to-pdf" class="filename-input" value="이미지_모음" maxlength="100" aria-describedby="hint-img-to-pdf"><p id="hint-img-to-pdf" class="filename-input-hint">📄 결과 형식: PDF 파일 · 파일 확장자는 자동으로 붙어요.</p></div>
           <label class="dropzone block">
             <input id="images-input" type="file" accept="image/jpeg,image/png,image/webp" multiple>
             <span class="w-14 h-14 rounded-2xl bg-pink-50 text-pink-600 flex items-center justify-center text-2xl mx-auto"><i class="fa-regular fa-images"></i></span>
@@ -190,17 +167,10 @@ footer{margin-top:1rem}
           <div id="images-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-5"></div>
         </div>
       </section>
-
-      <section id="panel-pdf-merge" class="tool-panel space-y-5">
+<section id="panel-pdf-merge" class="tool-panel space-y-5">
         <div class="bg-white rounded-2xl border border-pink-100 p-5 sm:p-7">
           <h3 class="text-lg font-bold">PDF 파일 병합</h3><p class="text-sm text-slate-500 mt-1 mb-5">여러 PDF를 한 파일로 합칩니다. 목록을 드래그해 순서를 바꾸세요.</p>
-          <div class="filename-box">
-            <div class="filename-heading"><span class="filename-icon"><i class="fa-solid fa-pen-to-square"></i></span><span>저장 파일 이름을 여기서 바꿔주세요!</span></div>
-            <p class="filename-description">아래 흰색 입력란을 클릭하고 원하는 이름을 입력하세요. 이 이름으로 결과 파일이 저장됩니다.</p>
-            <label for="output-name-pdf-merge" class="block text-base font-extrabold text-slate-800 mb-2">✏️ 저장할 파일 이름</label>
-            <input id="output-name-pdf-merge" class="filename-input" value="합쳐진_PDF" maxlength="100" aria-describedby="hint-pdf-merge">
-            <p id="hint-pdf-merge" class="filename-input-hint">📄 결과 형식: PDF 파일 · 파일 확장자는 자동으로 붙어요.</p>
-          </div>
+          <div class="filename-box"><div class="filename-heading"><span class="filename-icon"><i class="fa-solid fa-pen-to-square"></i></span><span>저장 파일 이름을 여기서 바꿔주세요!</span></div><p class="filename-description">아래 흰색 입력란을 클릭하고 원하는 이름을 입력하세요. 이 이름으로 결과 파일이 저장됩니다.</p><label for="output-name-pdf-merge" class="block text-base font-extrabold text-slate-800 mb-2">✏️ 저장할 파일 이름</label><input id="output-name-pdf-merge" class="filename-input" value="합쳐진_PDF" maxlength="100" aria-describedby="hint-pdf-merge"><p id="hint-pdf-merge" class="filename-input-hint">📄 결과 형식: PDF 파일 · 파일 확장자는 자동으로 붙어요.</p></div>
           <label class="dropzone block">
             <input id="merge-input" type="file" accept="application/pdf,.pdf" multiple>
             <span class="w-14 h-14 rounded-2xl bg-pink-50 text-pink-600 flex items-center justify-center text-2xl mx-auto"><i class="fa-solid fa-layer-group"></i></span>
@@ -209,17 +179,10 @@ footer{margin-top:1rem}
           <div id="merge-controls" class="hidden mt-4"><p id="merge-count" class="text-sm font-semibold mb-3"></p><div id="merge-list" class="space-y-2"></div><div class="flex flex-wrap gap-2 mt-4"><button id="merge-pdfs" class="primary">PDF 병합 및 다운로드</button><button id="clear-merge" class="secondary">초기화</button></div></div>
         </div>
       </section>
-
-      <section id="panel-pdf-edit" class="tool-panel space-y-5">
+<section id="panel-pdf-edit" class="tool-panel space-y-5">
         <div class="bg-white rounded-2xl border border-pink-100 p-5 sm:p-7">
           <h3 class="text-lg font-bold">PDF 페이지 편집</h3><p class="text-sm text-slate-500 mt-1 mb-5">페이지를 삭제·드래그해 순서를 바꾸고, 각 페이지를 왼쪽 또는 오른쪽으로 회전할 수 있어요.</p>
-          <div class="filename-box">
-            <div class="filename-heading"><span class="filename-icon"><i class="fa-solid fa-pen-to-square"></i></span><span>저장 파일 이름을 여기서 바꿔주세요!</span></div>
-            <p class="filename-description">아래 흰색 입력란을 클릭하고 원하는 이름을 입력하세요. 이 이름으로 결과 파일이 저장됩니다.</p>
-            <label for="output-name-pdf-edit" class="block text-base font-extrabold text-slate-800 mb-2">✏️ 저장할 파일 이름</label>
-            <input id="output-name-pdf-edit" class="filename-input" value="편집한_PDF" maxlength="100" aria-describedby="hint-pdf-edit">
-            <p id="hint-pdf-edit" class="filename-input-hint">📄 결과 형식: PDF 파일 · 파일 확장자는 자동으로 붙어요.</p>
-          </div>
+          <div class="filename-box"><div class="filename-heading"><span class="filename-icon"><i class="fa-solid fa-pen-to-square"></i></span><span>저장 파일 이름을 여기서 바꿔주세요!</span></div><p class="filename-description">아래 흰색 입력란을 클릭하고 원하는 이름을 입력하세요. 이 이름으로 결과 파일이 저장됩니다.</p><label for="output-name-pdf-edit" class="block text-base font-extrabold text-slate-800 mb-2">✏️ 저장할 파일 이름</label><input id="output-name-pdf-edit" class="filename-input" value="편집한_PDF" maxlength="100" aria-describedby="hint-pdf-edit"><p id="hint-pdf-edit" class="filename-input-hint">📄 결과 형식: PDF 파일 · 파일 확장자는 자동으로 붙어요.</p></div>
           <label class="dropzone block">
             <input id="edit-input" type="file" accept="application/pdf,.pdf">
             <span class="w-14 h-14 rounded-2xl bg-pink-50 text-pink-600 flex items-center justify-center text-2xl mx-auto"><i class="fa-solid fa-scissors"></i></span>
@@ -228,38 +191,30 @@ footer{margin-top:1rem}
           <div id="edit-controls" class="hidden mt-4"><p id="edit-count" class="text-sm font-semibold mb-3"></p><div id="edit-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3"></div><div class="flex flex-wrap gap-2 mt-4"><button id="save-edit" class="primary">편집한 PDF 저장</button><button id="clear-edit" class="secondary">초기화</button></div></div>
         </div>
       </section>
-
-      <section id="panel-pdf-content-edit" class="tool-panel space-y-5">
-        <div class="bg-white rounded-2xl border border-pink-100 p-5 sm:p-7">
-          <h3 class="text-lg font-bold">PDF 내용 편집</h3>
-          <p class="text-sm text-slate-500 mt-1 mb-5">페이지 위에 글자를 추가하거나, 기존 글자를 흰색으로 가린 뒤 새 글자로 덮어쓸 수 있어요. 형광펜·밑줄·손글씨 서명도 추가할 수 있어요.</p>
-          <div class="filename-box"><div class="filename-heading"><span class="filename-icon"><i class="fa-solid fa-pen-to-square"></i></span><span>저장 파일 이름</span></div><p class="filename-description">수정한 PDF를 저장할 이름을 입력하세요.</p><input id="output-name-pdf-content-edit" class="filename-input" value="PDF_내용_수정" maxlength="100" aria-label="저장할 PDF 파일 이름"><p class="filename-input-hint">PDF 확장자는 자동으로 붙어요.</p></div>
-          <label class="dropzone block"><input id="content-edit-input" type="file" accept="application/pdf,.pdf"><span class="w-14 h-14 rounded-2xl bg-pink-50 text-pink-600 flex items-center justify-center text-2xl mx-auto"><i class="fa-regular fa-file-pdf"></i></span><span class="block font-bold mt-4">내용을 수정할 PDF 선택</span><span class="block text-sm text-slate-400 mt-1">편집할 PDF 파일 1개를 선택하세요</span></label>
-          <div id="content-editor" class="hidden mt-5 space-y-4">
-            <div class="rounded-xl bg-pink-50 border border-pink-100 p-3"><p class="font-bold text-pink-800">사용 방법</p><p class="text-sm text-slate-600 mt-1">도구를 고른 뒤 문서에서 클릭하거나 드래그하세요. 기존 글자 수정은 ‘기존 글자 가리기 + 새 글자’ 방식이에요.</p></div>
-            <div class="flex flex-wrap items-center gap-2"><label for="content-page" class="font-bold text-sm">페이지</label><select id="content-page" class="border border-slate-200 rounded-lg p-2"></select><button type="button" id="content-undo" class="secondary">마지막 작업 취소</button><button type="button" id="content-clear" class="secondary">전체 주석 지우기</button></div>
-            <div class="flex flex-wrap gap-2" id="content-tools"><button type="button" class="secondary content-tool" data-tool="replace">기존 글자 가리기·바꾸기</button><button type="button" class="secondary content-tool" data-tool="text">텍스트 추가</button><button type="button" class="secondary content-tool" data-tool="highlight">형광펜</button><button type="button" class="secondary content-tool" data-tool="underline">밑줄</button><button type="button" class="secondary content-tool" data-tool="signature">서명 그리기</button><button type="button" class="secondary content-tool" data-tool="mosaic">모자이크</button></div>
-            <div class="flex flex-wrap items-center gap-3"><label class="text-sm font-semibold">색상 <input id="content-color" type="color" value="#ffdf5d" class="ml-1 align-middle w-10 h-9"></label><label class="text-sm font-semibold">글자 크기 <input id="content-font-size" type="number" min="8" max="72" value="16" class="ml-1 w-20 border border-slate-200 rounded-lg p-2"></label></div>
-            <div class="grid sm:grid-cols-2 gap-3 rounded-xl border border-pink-100 bg-pink-50/50 p-3"><label class="block text-sm font-semibold">형광펜 두께 <span id="highlight-size-label" class="text-pink-700">18 px</span><input id="highlight-size" type="range" min="6" max="50" value="18" class="block w-full mt-2 accent-pink-500"></label><label class="block text-sm font-semibold">모자이크 강도 <span id="mosaic-size-label" class="text-pink-700">12 px</span><input id="mosaic-size" type="range" min="4" max="28" value="12" class="block w-full mt-2 accent-pink-500"></label></div>
-            <div class="text-xs text-slate-500">텍스트는 클릭, 형광펜·밑줄·가리기·모자이크는 드래그하세요. 형광펜 두께와 모자이크 강도는 위에서 조절할 수 있어요. 서명은 마우스/손가락으로 그리세요.</div>
-            <div class="overflow-auto rounded-xl border border-slate-200 bg-slate-100 p-2"><div id="content-canvas-wrap" class="relative mx-auto" style="width:max-content;max-width:100%"><canvas id="content-pdf-canvas" class="block max-w-full h-auto bg-white shadow-sm"></canvas><canvas id="content-overlay-canvas" class="absolute inset-0 w-full h-full touch-none" style="cursor:crosshair"></canvas></div></div>
-            <div id="content-edit-count" class="text-sm text-slate-500"></div>
-            <div class="flex flex-wrap gap-2"><button type="button" id="content-save" class="primary">수정한 PDF 저장</button><button type="button" id="content-reset" class="secondary">PDF 다시 불러오기</button></div>
-            <p class="text-xs text-slate-400">참고: 기존 글자를 가리는 방식은 원본 글자를 실제로 삭제하지 않고 흰색 영역으로 덮습니다. PDF는 브라우저에서 처리되며 파일을 서버로 업로드하지 않아요.</p>
-          </div>
-        </div>
-      </section>
-
-      <section id="panel-pdf-split" class="tool-panel space-y-5">
+<section id="panel-pdf-content-edit" class="tool-panel space-y-5">
+  <div class="bg-white rounded-2xl border border-pink-100 p-5 sm:p-7">
+    <h3 class="text-lg font-bold">PDF 내용 편집</h3>
+    <p class="text-sm text-slate-500 mt-1 mb-5">페이지 위에 글자를 추가하거나, 기존 글자를 흰색으로 가린 뒤 새 글자로 덮어쓸 수 있어요. 형광펜·밑줄·손글씨 서명도 추가할 수 있어요.</p>
+    <div class="filename-box"><div class="filename-heading"><span class="filename-icon"><i class="fa-solid fa-pen-to-square"></i></span><span>저장 파일 이름</span></div><p class="filename-description">수정한 PDF를 저장할 이름을 입력하세요.</p><input id="output-name-pdf-content-edit" class="filename-input" value="PDF_내용_수정" maxlength="100" aria-label="저장할 PDF 파일 이름"><p class="filename-input-hint">PDF 확장자는 자동으로 붙어요.</p></div>
+    <label class="dropzone block"><input id="content-edit-input" type="file" accept="application/pdf,.pdf"><span class="w-14 h-14 rounded-2xl bg-pink-50 text-pink-600 flex items-center justify-center text-2xl mx-auto"><i class="fa-regular fa-file-pdf"></i></span><span class="block font-bold mt-4">내용을 수정할 PDF 선택</span><span class="block text-sm text-slate-400 mt-1">편집할 PDF 파일 1개를 선택하세요</span></label>
+    <div id="content-editor" class="hidden mt-5 space-y-4">
+      <div class="rounded-xl bg-pink-50 border border-pink-100 p-3"><p class="font-bold text-pink-800">사용 방법</p><p class="text-sm text-slate-600 mt-1">도구를 고른 뒤 문서에서 클릭하거나 드래그하세요. 기존 글자 수정은 ‘기존 글자 가리기 + 새 글자’ 방식이에요.</p></div>
+      <div class="flex flex-wrap items-center gap-2"><label for="content-page" class="font-bold text-sm">페이지</label><select id="content-page" class="border border-slate-200 rounded-lg p-2"></select><button type="button" id="content-undo" class="secondary">마지막 작업 취소</button><button type="button" id="content-clear" class="secondary">전체 주석 지우기</button></div>
+      <div class="flex flex-wrap gap-2" id="content-tools"><button type="button" class="secondary content-tool" data-tool="replace">기존 글자 가리기·바꾸기</button><button type="button" class="secondary content-tool" data-tool="text">텍스트 추가</button><button type="button" class="secondary content-tool" data-tool="highlight">형광펜</button><button type="button" class="secondary content-tool" data-tool="underline">밑줄</button><button type="button" class="secondary content-tool" data-tool="signature">서명 그리기</button><button type="button" class="secondary content-tool" data-tool="mosaic">모자이크</button></div>
+      <div class="flex flex-wrap items-center gap-3"><label class="text-sm font-semibold">색상 <input id="content-color" type="color" value="#ffdf5d" class="ml-1 align-middle w-10 h-9"></label><label class="text-sm font-semibold">글자 크기 <input id="content-font-size" type="number" min="8" max="72" value="16" class="ml-1 w-20 border border-slate-200 rounded-lg p-2"></label></div>
+      <div class="grid sm:grid-cols-2 gap-3 rounded-xl border border-pink-100 bg-pink-50/50 p-3"><label class="block text-sm font-semibold">형광펜 두께 <span id="highlight-size-label" class="text-pink-700">18 px</span><input id="highlight-size" type="range" min="6" max="50" value="18" class="block w-full mt-2 accent-pink-500"></label><label class="block text-sm font-semibold">모자이크 강도 <span id="mosaic-size-label" class="text-pink-700">12 px</span><input id="mosaic-size" type="range" min="4" max="28" value="12" class="block w-full mt-2 accent-pink-500"></label></div>
+      <div class="text-xs text-slate-500">텍스트는 클릭, 형광펜·밑줄·가리기·모자이크는 드래그하세요. 형광펜 두께와 모자이크 강도는 위에서 조절할 수 있어요. 서명은 마우스/손가락으로 그리세요.</div>
+      <div class="overflow-auto rounded-xl border border-slate-200 bg-slate-100 p-2"><div id="content-canvas-wrap" class="relative mx-auto" style="width:max-content;max-width:100%"><canvas id="content-pdf-canvas" class="block max-w-full h-auto bg-white shadow-sm"></canvas><canvas id="content-overlay-canvas" class="absolute inset-0 w-full h-full touch-none" style="cursor:crosshair"></canvas></div></div>
+      <div id="content-edit-count" class="text-sm text-slate-500"></div>
+      <div class="flex flex-wrap gap-2"><button type="button" id="content-save" class="primary">수정한 PDF 저장</button><button type="button" id="content-reset" class="secondary">PDF 다시 불러오기</button></div>
+      <p class="text-xs text-slate-400">참고: 기존 글자를 가리는 방식은 원본 글자를 실제로 삭제하지 않고 흰색 영역으로 덮습니다. PDF는 브라우저에서 처리되며 파일을 서버로 업로드하지 않아요.</p>
+    </div>
+  </div>
+</section>
+<section id="panel-pdf-split" class="tool-panel space-y-5">
         <div class="bg-white rounded-2xl border border-pink-100 p-5 sm:p-7">
           <h3 class="text-lg font-bold">PDF 페이지 분할</h3><p class="text-sm text-slate-500 mt-1 mb-5">페이지 범위를 입력해 여러 PDF로 나누고 ZIP 파일로 다운로드합니다.</p>
-          <div class="filename-box">
-            <div class="filename-heading"><span class="filename-icon"><i class="fa-solid fa-pen-to-square"></i></span><span>저장 파일 이름을 여기서 바꿔주세요!</span></div>
-            <p class="filename-description">아래 흰색 입력란을 클릭하고 원하는 이름을 입력하세요. 이 이름으로 결과 파일이 저장됩니다.</p>
-            <label for="output-name-pdf-split" class="block text-base font-extrabold text-slate-800 mb-2">✏️ 저장할 파일 이름</label>
-            <input id="output-name-pdf-split" class="filename-input" value="분할한_PDF" maxlength="100" aria-describedby="hint-pdf-split">
-            <p id="hint-pdf-split" class="filename-input-hint">📦 결과 형식: ZIP 파일 · ZIP 안의 개별 PDF에는 페이지 범위가 표시돼요.</p>
-          </div>
+          <div class="filename-box"><div class="filename-heading"><span class="filename-icon"><i class="fa-solid fa-pen-to-square"></i></span><span>저장 파일 이름을 여기서 바꿔주세요!</span></div><p class="filename-description">아래 흰색 입력란을 클릭하고 원하는 이름을 입력하세요. 이 이름으로 결과 파일이 저장됩니다.</p><label for="output-name-pdf-split" class="block text-base font-extrabold text-slate-800 mb-2">✏️ 저장할 파일 이름</label><input id="output-name-pdf-split" class="filename-input" value="분할한_PDF" maxlength="100" aria-describedby="hint-pdf-split"><p id="hint-pdf-split" class="filename-input-hint">📦 결과 형식: ZIP 파일 · ZIP 안의 개별 PDF에는 페이지 범위가 표시돼요.</p></div>
           <label class="dropzone block">
             <input id="split-input" type="file" accept="application/pdf,.pdf">
             <span class="w-14 h-14 rounded-2xl bg-pink-50 text-pink-600 flex items-center justify-center text-2xl mx-auto"><i class="fa-solid fa-file-circle-minus"></i></span>
@@ -274,51 +229,71 @@ footer{margin-top:1rem}
           </div>
         </div>
       </section>
-
-      <section id="panel-pdf-page-number" class="tool-panel space-y-5">
-        <div class="bg-white rounded-2xl border border-pink-100 p-5 sm:p-7">
-          <h3 class="text-lg font-bold">PDF 페이지 번호 추가</h3>
-          <p class="text-sm text-slate-500 mt-1 mb-5">모든 페이지 하단에 번호를 넣어요. 글꼴은 PDF 안에 포함해 다른 컴퓨터에서도 보이도록 합니다.</p>
-          <div class="filename-box"><div class="filename-heading"><span class="filename-icon"><i class="fa-solid fa-pen-to-square"></i></span><span>저장 파일 이름</span></div><p class="filename-description">번호를 추가한 PDF의 이름을 입력하세요.</p><input id="output-name-page-number" class="filename-input" value="페이지번호_추가" maxlength="100" aria-label="저장할 PDF 파일 이름"><p class="filename-input-hint">PDF 확장자는 자동으로 붙어요.</p></div>
-          <label class="dropzone block mt-4"><input id="page-number-input" type="file" accept="application/pdf,.pdf"><span class="w-14 h-14 rounded-2xl bg-pink-50 text-pink-600 flex items-center justify-center text-2xl mx-auto"><i class="fa-regular fa-file-pdf"></i></span><span class="block font-bold mt-4">페이지 번호를 넣을 PDF 선택</span><span class="block text-sm text-slate-400 mt-1">PDF 파일 1개를 선택하세요</span></label>
-          <div id="page-number-controls" class="hidden mt-5 space-y-4">
-            <p id="page-number-info" class="text-sm font-semibold"></p>
-            <div class="grid sm:grid-cols-2 gap-3">
-              <label class="text-sm font-semibold">번호 위치 <select id="page-number-position" class="mt-1 w-full border border-slate-200 rounded-lg p-2"><option value="center">하단 가운데</option><option value="left">하단 왼쪽</option><option value="right">하단 오른쪽</option></select></label>
-              <label class="text-sm font-semibold">번호 형식 <select id="page-number-format" class="mt-1 w-full border border-slate-200 rounded-lg p-2"><option value="plain">1, 2, 3…</option><option value="dash">- 1 -</option><option value="of">1 / 전체 페이지 수</option></select></label>
-              <label class="text-sm font-semibold">글꼴 <select id="page-number-font" class="mt-1 w-full border border-slate-200 rounded-lg p-2"><option value="notosans">Noto Sans KR (고딕)</option><option value="notoserif">Noto Serif KR (명조)</option><option value="nanumgothic">나눔고딕</option><option value="nanummyeongjo">나눔명조</option><option value="helvetica">Helvetica (영문 기본 글꼴)</option></select></label>
-              <label class="text-sm font-semibold">글자 크기 <span id="page-number-size-label" class="text-pink-700">10 pt</span><input id="page-number-size" type="range" min="6" max="24" value="10" class="block w-full mt-2 accent-pink-500"></label>
-              <label class="text-sm font-semibold">아래쪽 여백 <span id="page-number-margin-label" class="text-pink-700">24 pt</span><input id="page-number-margin" type="range" min="12" max="60" value="24" class="block w-full mt-2 accent-pink-500"></label>
-              <label class="text-sm font-semibold">글자 색상 <input id="page-number-color" type="color" value="#555555" class="ml-2 align-middle w-10 h-9"></label>
-            </div>
-            <div class="rounded-xl bg-pink-50 border border-pink-100 p-3 text-sm text-slate-600">무료 라이선스 글꼴(Noto / 나눔)을 선택하면 글꼴을 PDF에 포함해 저장해요. 글꼴을 내려받기 위해 인터넷 연결이 필요할 수 있습니다.</div>
-            <button type="button" id="apply-page-numbers" class="primary">페이지 번호 추가하고 저장</button>
-          </div>
-        </div>
-      </section>
-
-      <section id="panel-pdf-protect" class="tool-panel space-y-5">
-        <div class="bg-white rounded-2xl border border-pink-100 p-5 sm:p-7">
-          <h3 class="text-lg font-bold">PDF 비밀번호 보호</h3>
-          <p class="text-sm text-slate-500 mt-1 mb-5">PDF를 열 때 비밀번호를 입력하도록 설정합니다. 암호화는 브라우저 안에서 처리해요.</p>
-          <div class="filename-box"><div class="filename-heading"><span class="filename-icon"><i class="fa-solid fa-lock"></i></span><span>저장 파일 이름</span></div><p class="filename-description">비밀번호로 보호할 PDF의 저장 이름을 입력하세요.</p><input id="output-name-pdf-protect" class="filename-input" value="비밀번호_보호_PDF" maxlength="100" aria-label="저장할 PDF 파일 이름"><p class="filename-input-hint">PDF 확장자는 자동으로 붙어요.</p></div>
-          <label class="dropzone block mt-4"><input id="protect-input" type="file" accept="application/pdf,.pdf"><span class="w-14 h-14 rounded-2xl bg-pink-50 text-pink-600 flex items-center justify-center text-2xl mx-auto"><i class="fa-solid fa-lock"></i></span><span class="block font-bold mt-4">보호할 PDF 선택</span><span class="block text-sm text-slate-400 mt-1">암호화되지 않은 PDF 파일 1개</span></label>
-          <div id="protect-controls" class="hidden mt-5 space-y-3">
-            <p id="protect-info" class="text-sm font-semibold"></p>
-            <label class="block text-sm font-semibold">열기 비밀번호 <input id="protect-password" type="password" minlength="8" autocomplete="new-password" class="mt-1 w-full border border-slate-200 rounded-lg p-3" placeholder="8자 이상 권장"></label>
-            <label class="block text-sm font-semibold">비밀번호 확인 <input id="protect-password-confirm" type="password" minlength="8" autocomplete="new-password" class="mt-1 w-full border border-slate-200 rounded-lg p-3" placeholder="같은 비밀번호를 다시 입력"></label>
-            <p class="text-xs text-slate-500">비밀번호를 잊으면 파일을 열지 못할 수 있어요. 강력한 비밀번호를 사용하고 안전한 곳에 보관하세요. 비밀번호 보호는 복사·캡처를 완전히 막는 기능은 아닙니다.</p>
-            <button type="button" id="apply-pdf-protection" class="primary">비밀번호 설정하고 저장</button>
-          </div>
-        </div>
-      </section>
-
-      <div id="global-status" class="status" role="status" aria-live="polite"></div>
-      <p class="text-xs text-slate-400 mt-5 text-center">파일 처리는 브라우저에서 진행됩니다. 민감한 문서는 사용 후 다운로드 폴더와 브라우저 파일을 확인해 주세요.</p>
+<section id="panel-pdf-page-number" class="tool-panel space-y-5">
+  <div class="bg-white rounded-2xl border border-pink-100 p-5 sm:p-7">
+    <h3 class="text-lg font-bold">PDF 페이지 번호 추가</h3>
+    <p class="text-sm text-slate-500 mt-1 mb-5">모든 페이지 하단에 번호를 넣어요. 글꼴은 PDF 안에 포함해 다른 컴퓨터에서도 보이도록 합니다.</p>
+    <div class="filename-box"><div class="filename-heading"><span class="filename-icon"><i class="fa-solid fa-pen-to-square"></i></span><span>저장 파일 이름</span></div><p class="filename-description">번호를 추가한 PDF의 이름을 입력하세요.</p><input id="output-name-page-number" class="filename-input" value="페이지번호_추가" maxlength="100" aria-label="저장할 PDF 파일 이름"><p class="filename-input-hint">PDF 확장자는 자동으로 붙어요.</p></div>
+    <label class="dropzone block mt-4"><input id="page-number-input" type="file" accept="application/pdf,.pdf"><span class="w-14 h-14 rounded-2xl bg-pink-50 text-pink-600 flex items-center justify-center text-2xl mx-auto"><i class="fa-regular fa-file-pdf"></i></span><span class="block font-bold mt-4">페이지 번호를 넣을 PDF 선택</span><span class="block text-sm text-slate-400 mt-1">PDF 파일 1개를 선택하세요</span></label>
+    <div id="page-number-controls" class="hidden mt-5 space-y-4">
+      <p id="page-number-info" class="text-sm font-semibold"></p>
+      <div class="grid sm:grid-cols-2 gap-3">
+        <label class="text-sm font-semibold">번호 위치 <select id="page-number-position" class="mt-1 w-full border border-slate-200 rounded-lg p-2"><option value="center">하단 가운데</option><option value="left">하단 왼쪽</option><option value="right">하단 오른쪽</option></select></label>
+        <label class="text-sm font-semibold">번호 형식 <select id="page-number-format" class="mt-1 w-full border border-slate-200 rounded-lg p-2"><option value="plain">1, 2, 3…</option><option value="dash">- 1 -</option><option value="of">1 / 전체 페이지 수</option></select></label>
+        <label class="text-sm font-semibold">글꼴 <select id="page-number-font" class="mt-1 w-full border border-slate-200 rounded-lg p-2"><option value="notosans">Noto Sans KR (고딕)</option><option value="notoserif">Noto Serif KR (명조)</option><option value="nanumgothic">나눔고딕</option><option value="nanummyeongjo">나눔명조</option><option value="helvetica">Helvetica (영문 기본 글꼴)</option></select></label>
+        <label class="text-sm font-semibold">글자 크기 <span id="page-number-size-label" class="text-pink-700">10 pt</span><input id="page-number-size" type="range" min="6" max="24" value="10" class="block w-full mt-2 accent-pink-500"></label>
+        <label class="text-sm font-semibold">아래쪽 여백 <span id="page-number-margin-label" class="text-pink-700">24 pt</span><input id="page-number-margin" type="range" min="12" max="60" value="24" class="block w-full mt-2 accent-pink-500"></label>
+        <label class="text-sm font-semibold">글자 색상 <input id="page-number-color" type="color" value="#555555" class="ml-2 align-middle w-10 h-9"></label>
+      </div>
+      <div class="rounded-xl bg-pink-50 border border-pink-100 p-3 text-sm text-slate-600">무료 라이선스 글꼴(Noto / 나눔)을 선택하면 글꼴을 PDF에 포함해 저장해요. 글꼴을 내려받기 위해 인터넷 연결이 필요할 수 있습니다.</div>
+      <button type="button" id="apply-page-numbers" class="primary">페이지 번호 추가하고 저장</button>
     </div>
+  </div>
+</section>
+<section id="panel-pdf-protect" class="tool-panel space-y-5">
+  <div class="bg-white rounded-2xl border border-pink-100 p-5 sm:p-7">
+    <h3 class="text-lg font-bold">PDF 비밀번호 보호</h3>
+    <p class="text-sm text-slate-500 mt-1 mb-5">PDF를 열 때 비밀번호를 입력하도록 설정합니다. 암호화는 브라우저 안에서 처리해요.</p>
+    <div class="filename-box"><div class="filename-heading"><span class="filename-icon"><i class="fa-solid fa-lock"></i></span><span>저장 파일 이름</span></div><p class="filename-description">비밀번호로 보호할 PDF의 저장 이름을 입력하세요.</p><input id="output-name-pdf-protect" class="filename-input" value="비밀번호_보호_PDF" maxlength="100" aria-label="저장할 PDF 파일 이름"><p class="filename-input-hint">PDF 확장자는 자동으로 붙어요.</p></div>
+    <label class="dropzone block mt-4"><input id="protect-input" type="file" accept="application/pdf,.pdf"><span class="w-14 h-14 rounded-2xl bg-pink-50 text-pink-600 flex items-center justify-center text-2xl mx-auto"><i class="fa-solid fa-lock"></i></span><span class="block font-bold mt-4">보호할 PDF 선택</span><span class="block text-sm text-slate-400 mt-1">암호화되지 않은 PDF 파일 1개</span></label>
+    <div id="protect-controls" class="hidden mt-5 space-y-3">
+      <p id="protect-info" class="text-sm font-semibold"></p>
+      <label class="block text-sm font-semibold">열기 비밀번호 <input id="protect-password" type="password" minlength="8" autocomplete="new-password" class="mt-1 w-full border border-slate-200 rounded-lg p-3" placeholder="8자 이상 권장"></label>
+      <label class="block text-sm font-semibold">비밀번호 확인 <input id="protect-password-confirm" type="password" minlength="8" autocomplete="new-password" class="mt-1 w-full border border-slate-200 rounded-lg p-3" placeholder="같은 비밀번호를 다시 입력"></label>
+      <p class="text-xs text-slate-500">비밀번호를 잊으면 파일을 열지 못할 수 있어요. 강력한 비밀번호를 사용하고 안전한 곳에 보관하세요. 비밀번호 보호는 복사·캡처를 완전히 막는 기능은 아닙니다.</p>
+      <button type="button" id="apply-pdf-protection" class="primary">비밀번호 설정하고 저장</button>
+    </div>
+  </div>
+</section>
+<section id="panel-pdf-compare" class="tool-panel space-y-5">
+  <div class="bg-white rounded-2xl border border-pink-100 p-5 sm:p-7">
+    <h3 class="text-lg font-bold">PDF 비교</h3>
+    <p class="text-sm text-slate-500 mt-1 mb-5">두 PDF를 나란히 미리 보고 현재 페이지의 텍스트 차이를 표시합니다. 스캔본이나 이미지 안의 글자, 시각적 레이아웃 차이는 텍스트 비교에 포함되지 않을 수 있어요.</p>
+    <div class="grid sm:grid-cols-2 gap-4">
+      <label class="dropzone block"><input id="compare-file-a" type="file" accept="application/pdf,.pdf"><span class="w-12 h-12 rounded-2xl bg-pink-50 text-pink-600 flex items-center justify-center text-2xl mx-auto"><i class="fa-regular fa-file-pdf"></i></span><span class="block font-bold mt-3">기존 버전 PDF</span><span id="compare-name-a" class="block text-xs text-slate-400 mt-1">첫 번째 PDF 선택</span></label>
+      <label class="dropzone block"><input id="compare-file-b" type="file" accept="application/pdf,.pdf"><span class="w-12 h-12 rounded-2xl bg-green-50 text-green-600 flex items-center justify-center text-2xl mx-auto"><i class="fa-regular fa-file-pdf"></i></span><span class="block font-bold mt-3">새 버전 PDF</span><span id="compare-name-b" class="block text-xs text-slate-400 mt-1">두 번째 PDF 선택</span></label>
+    </div>
+    <div id="compare-controls" class="hidden mt-5 space-y-4">
+      <div class="flex flex-wrap items-center gap-2"><button id="compare-prev" class="secondary" type="button">이전 페이지</button><span id="compare-page-label" class="text-sm font-bold px-2">1페이지</span><button id="compare-next" class="secondary" type="button">다음 페이지</button><button id="run-compare" class="primary" type="button">현재 페이지 비교</button></div>
+      <div class="grid lg:grid-cols-2 gap-4"><div class="rounded-xl border border-pink-100 p-3 min-w-0"><p class="font-bold text-sm mb-2">기존 버전</p><div class="overflow-auto bg-slate-50 rounded-lg"><canvas id="compare-canvas-a" class="mx-auto max-w-full h-auto"></canvas></div><div id="compare-text-a" class="text-xs whitespace-pre-wrap break-words mt-3 max-h-64 overflow-auto"></div></div><div class="rounded-xl border border-green-100 p-3 min-w-0"><p class="font-bold text-sm mb-2">새 버전</p><div class="overflow-auto bg-slate-50 rounded-lg"><canvas id="compare-canvas-b" class="mx-auto max-w-full h-auto"></canvas></div><div id="compare-text-b" class="text-xs whitespace-pre-wrap break-words mt-3 max-h-64 overflow-auto"></div></div></div>
+      <div id="compare-summary" class="rounded-xl bg-pink-50 border border-pink-100 p-4 text-sm" aria-live="polite">두 PDF를 선택하면 비교할 수 있어요.</div>
+      <p class="text-xs text-slate-500">색상 표시: <span class="text-red-600 font-bold">빨강 = 기존 버전에만 있는 텍스트</span>, <span class="text-green-700 font-bold">초록 = 새 버전에만 있는 텍스트</span>. 이 비교는 문장/줄 단위의 간단한 차이 분석이며 법률·계약 검토용 완전한 검증 도구는 아닙니다.</p>
+    </div>
+  </div>
+</section>
+<section id="panel-pdf-crop" class="tool-panel space-y-5">
+  <div class="bg-white rounded-2xl border border-pink-100 p-5 sm:p-7">
+    <h3 class="text-lg font-bold">PDF 자르기</h3>
+    <p class="text-sm text-slate-500 mt-1 mb-5">미리 보기에서 마우스로 드래그해 남길 영역을 선택하세요. 선택한 사각형 바깥은 페이지 표시 영역에서 제외됩니다.</p>
+    <div class="filename-box"><div class="filename-heading"><span class="filename-icon"><i class="fa-solid fa-pen-to-square"></i></span><span>저장 파일 이름</span></div><p class="filename-description">잘라낸 PDF의 이름을 입력하세요.</p><input id="output-name-pdf-crop" class="filename-input" value="잘라낸_PDF" maxlength="100" aria-label="저장할 PDF 파일 이름"><p class="filename-input-hint">PDF 확장자는 자동으로 붙어요.</p></div>
+    <label class="dropzone block mt-4"><input id="crop-input" type="file" accept="application/pdf,.pdf"><span class="w-14 h-14 rounded-2xl bg-pink-50 text-pink-600 flex items-center justify-center text-2xl mx-auto"><i class="fa-solid fa-crop-simple"></i></span><span class="block font-bold mt-4">자를 PDF 선택</span><span class="block text-sm text-slate-400 mt-1">첫 페이지를 미리 보며 자를 영역을 선택해요</span></label>
+    <div id="crop-controls" class="hidden mt-5 space-y-4"><p id="crop-info" class="text-sm font-semibold"></p><div class="rounded-xl border border-pink-100 bg-slate-50 p-2 overflow-auto"><canvas id="crop-canvas" class="mx-auto max-w-full h-auto cursor-crosshair touch-none"></canvas></div><p id="crop-selection-label" class="text-xs text-slate-500">미리 보기에서 드래그해 남길 영역을 선택하세요.</p><div class="grid sm:grid-cols-2 gap-3"><label class="text-sm font-semibold">적용 범위<select id="crop-scope" class="mt-1 w-full border border-slate-200 rounded-lg p-2"><option value="all">전체 페이지에 같은 비율로 적용</option><option value="first">첫 페이지에만 적용</option></select></label><div class="flex items-end"><button id="crop-reset" class="secondary" type="button">선택 영역 초기화</button></div></div><div class="rounded-xl bg-amber-50 border border-amber-100 p-3 text-sm text-slate-600">안내: 이 기능은 PDF의 페이지 표시 영역(CropBox)을 조정합니다. 잘라낸 바깥 내용이 파일 내부에 남을 수 있으므로 민감한 정보를 영구 삭제하는 용도로 사용하지 마세요. 전체 페이지 적용은 페이지마다 같은 비율의 영역을 적용합니다.</div><button id="apply-crop" class="primary" type="button">영역 자르고 PDF 저장</button></div>
+  </div>
+</section>
+<div id="global-status" class="status" role="status" aria-live="polite"></div>
+      <p class="text-xs text-slate-400 mt-5 text-center">파일 처리는 브라우저에서 진행됩니다. 민감한 문서는 사용 후 다운로드 폴더와 브라우저 파일을 확인해 주세요.</p></div>
   </section>
 </main>
-
 <script>
 (() => {
   'use strict';
@@ -361,7 +336,8 @@ footer{margin-top:1rem}
     el._sortable = new Sortable(el, {animation:150, onEnd});
   }
 
-  const toolNames = {'pdf-to-img':'PDF를 이미지로 변환','img-to-pdf':'이미지를 PDF로 변환','pdf-merge':'PDF 파일 합치기','pdf-edit':'PDF 페이지 편집','pdf-content-edit':'PDF 내용 편집','pdf-split':'PDF 페이지 나누기','pdf-page-number':'PDF 페이지 번호','pdf-protect':'PDF 비밀번호 보호'};
+  // 첫 화면의 기능 카드를 누르면 해당 도구로 이동합니다.
+  const toolNames = {'pdf-to-img':'PDF를 이미지로 변환','img-to-pdf':'이미지를 PDF로 변환','pdf-merge':'PDF 파일 합치기','pdf-edit':'PDF 페이지 편집','pdf-content-edit':'PDF 내용 편집','pdf-split':'PDF 페이지 나누기','pdf-page-number':'PDF 페이지 번호','pdf-protect':'PDF 비밀번호 보호','pdf-compare':'PDF 비교','pdf-crop':'PDF 자르기'};
   function switchMode(mode) {
     $('home-panel').style.display = 'none';
     $('tool-view').classList.add('show');
@@ -377,6 +353,7 @@ footer{margin-top:1rem}
     clearStatus(); window.scrollTo({top:0,behavior:'smooth'});
   });
 
+  // 1. 여러 PDF를 한 번에 JPG/PNG로 변환
   $('pdf-image-input').addEventListener('change', async e => {
     currentPdfFiles = Array.from(e.target.files || []);
     if (!currentPdfFiles.length) return;
@@ -427,10 +404,12 @@ footer{margin-top:1rem}
             const customBase = outputName('output-name-pdf-to-img', 'PDF_이미지_변환');
             const fileBase = currentPdfFiles.length === 1 ? customBase : `${customBase}_${folderName}`;
             downloadBlob(blob, `${fileBase}_page-${String(pageNum).padStart(3, '0')}.${ext}`);
+            // 브라우저가 여러 파일 다운로드를 차단하지 않도록 다운로드 사이에 짧게 대기합니다.
             await new Promise(resolve => setTimeout(resolve, 180));
           }
           totalPages++;
 
+          // 첫 6개 페이지만 미리보기로 표시
           if (totalPages <= 6) {
             const url = URL.createObjectURL(blob);
             const card = document.createElement('div');
@@ -458,6 +437,7 @@ footer{margin-top:1rem}
     }
   });
 
+  // 2. Images -> PDF
   $('images-input').addEventListener('change', e => {
     imageFiles=Array.from(e.target.files||[]);
     renderImageTiles();
@@ -503,6 +483,7 @@ footer{margin-top:1rem}
     finally{setBusy(btn,false);}
   });
 
+  // 3. Merge PDFs
   $('merge-input').addEventListener('change',e=>{
     mergeFiles=Array.from(e.target.files||[]);
     renderMergeList();
@@ -531,6 +512,7 @@ footer{margin-top:1rem}
     finally{setBusy(btn,false);}
   });
 
+  // 4. Edit pages: remove and reorder
   $('edit-input').addEventListener('change',async e=>{
     editFile=e.target.files[0];if(!editFile)return;
     try{
@@ -540,7 +522,8 @@ footer{margin-top:1rem}
   });
   async function renderEditPages(){
     editObjectUrls.forEach(URL.revokeObjectURL);editObjectUrls=[];
-    const grid=$('edit-grid');grid.innerHTML='';$('edit-controls').classList.toggle('hidden',!editFile);$('edit-count').textContent=`페이지 ${editOrder.length}개 · 드래그하여 순서 변경`;
+    const grid=$('edit-grid');grid.innerHTML='';$('edit-controls').classList.toggle('hidden',!editFile);
+    $('edit-count').textContent=`페이지 ${editOrder.length}개 · 드래그하여 순서 변경`;
     if(!editFile)return;
     const pdf=await pdfjsLib.getDocument({data:await editFile.arrayBuffer()}).promise;
     for(const pageNum of editOrder){
@@ -556,7 +539,8 @@ footer{margin-top:1rem}
     }
     setupSortable(grid,()=>{editOrder=[...grid.children].map(el=>Number(el.dataset.page));renderEditPages();});
   }
-  $('clear-edit').addEventListener('click',()=>{editFile=null;editOrder=[];editRotations={};$('edit-input').value='';renderEditPages();clearStatus();});$('save-edit').addEventListener('click',async e=>{
+  $('clear-edit').addEventListener('click',()=>{editFile=null;editOrder=[];editRotations={};$('edit-input').value='';renderEditPages();clearStatus();});
+  $('save-edit').addEventListener('click',async e=>{
     const btn=e.currentTarget;if(!editFile){status('편집할 PDF를 먼저 선택해 주세요.',true);return;}
     if(!editOrder.length){status('저장할 페이지가 없습니다. 최소 한 페이지는 남겨 주세요.',true);return;}
     setBusy(btn,true,'저장 중...');
@@ -568,12 +552,15 @@ footer{margin-top:1rem}
     finally{setBusy(btn,false);}
   });
 
+  // 5. PDF content editor: text overlays, whiteout replacement, highlight, underline, signature.
   let contentFile=null, contentPdfJs=null, contentPageNum=1, contentTool='replace', contentAnnotations=[];
   let contentDrawing=false, contentStart=null, contentStroke=[];
   const contentCanvas=$('content-pdf-canvas'), contentOverlay=$('content-overlay-canvas');
   const contentCtx=contentCanvas.getContext('2d'), overlayCtx=contentOverlay.getContext('2d');
   const contentToolLabels={replace:'기존 글자 가리기·바꾸기',text:'텍스트 추가',highlight:'형광펜',underline:'밑줄',signature:'서명 그리기',mosaic:'모자이크'};
-  $('highlight-size').addEventListener('input',e=>{$('highlight-size-label').textContent=e.target.value+' px';});$('mosaic-size').addEventListener('input',e=>{$('mosaic-size-label').textContent=e.target.value+' px';});$('content-edit-input').addEventListener('change',async e=>{
+  $('highlight-size').addEventListener('input',e=>{$('highlight-size-label').textContent=e.target.value+' px';});
+  $('mosaic-size').addEventListener('input',e=>{$('mosaic-size-label').textContent=e.target.value+' px';});
+  $('content-edit-input').addEventListener('change',async e=>{
     const file=e.target.files[0]; if(!file)return;
     try{
       contentFile=file; contentAnnotations=[];
@@ -635,7 +622,8 @@ footer{margin-top:1rem}
     }
     drawContentAnnotations();updateContentCount();
   });
-  $('content-undo').addEventListener('click',()=>{contentAnnotations.pop();drawContentAnnotations();updateContentCount();});$('content-clear').addEventListener('click',()=>{if(confirm('추가한 편집 항목을 모두 지울까요?')){contentAnnotations=[];drawContentAnnotations();updateContentCount();}});
+  $('content-undo').addEventListener('click',()=>{contentAnnotations.pop();drawContentAnnotations();updateContentCount();});
+  $('content-clear').addEventListener('click',()=>{if(confirm('추가한 편집 항목을 모두 지울까요?')){contentAnnotations=[];drawContentAnnotations();updateContentCount();}});
   $('content-reset').addEventListener('click',()=>{if(contentFile){contentAnnotations=[];$('content-edit-input').value='';$('content-editor').classList.add('hidden');contentPdfJs=null;contentFile=null;contentCanvas.width=0;contentOverlay.width=0;status('PDF를 다시 선택할 수 있어요.');}});
   $('content-save').addEventListener('click',async e=>{
     const btn=e.currentTarget;if(!contentFile||!contentPdfJs){status('먼저 PDF를 선택해 주세요.',true);return;}
@@ -662,6 +650,7 @@ footer{margin-top:1rem}
     finally{setBusy(btn,false);}
   });
 
+  // 6. Add page numbers using embeddable open-license fonts.
   let pageNumberFile=null, protectFile=null;
   const pageNumberFontUrls={
     notosans:'https://cdn.jsdelivr.net/gh/google/fonts@main/ofl/notosanskr/NotoSansKR%5Bwght%5D.ttf',
@@ -671,7 +660,8 @@ footer{margin-top:1rem}
   };
   $('page-number-size').addEventListener('input',e=>$('page-number-size-label').textContent=e.target.value+' pt');
   $('page-number-margin').addEventListener('input',e=>$('page-number-margin-label').textContent=e.target.value+' pt');
-  $('page-number-input').addEventListener('change',e=>{pageNumberFile=e.target.files[0]\vert{}\vert{}null;if(!pageNumberFile)return;$('page-number-info').textContent=`${pageNumberFile.name} · 페이지 번호를 ${'PDF'} 모든 페이지에 추가합니다.`;$('page-number-controls').classList.remove('hidden');});$('apply-page-numbers').addEventListener('click',async e=>{
+  $('page-number-input').addEventListener('change',e=>{pageNumberFile=e.target.files[0]||null;if(!pageNumberFile)return;$('page-number-info').textContent=`${pageNumberFile.name} · 페이지 번호를 ${'PDF'} 모든 페이지에 추가합니다.`;$('page-number-controls').classList.remove('hidden');});
+  $('apply-page-numbers').addEventListener('click',async e=>{
     const btn=e.currentTarget;if(!pageNumberFile){status('먼저 PDF를 선택해 주세요.',true);return;}
     setBusy(btn,true,'페이지 번호 추가 중...');
     try{
@@ -684,7 +674,7 @@ footer{margin-top:1rem}
         const response=await fetch(pageNumberFontUrls[fontChoice]);if(!response.ok)throw new Error('글꼴을 내려받지 못했어요. 잠시 후 다시 시도해 주세요.');
         font=await doc.embedFont(await response.arrayBuffer(),{subset:true});
       }
-      const size=Number($('page-number-size').value)\vert{}\vert{}10,margin=Number($('page-number-margin').value)||24,position=$('page-number-position').value,format=$('page-number-format').value;
+      const size=Number($('page-number-size').value)||10,margin=Number($('page-number-margin').value)||24,position=$('page-number-position').value,format=$('page-number-format').value;
       const hex=$('page-number-color').value.replace('#',''),n=parseInt(hex,16),color=PDFLib.rgb(((n>>16)&255)/255,((n>>8)&255)/255,(n&255)/255),total=doc.getPageCount();
       doc.getPages().forEach((page,i)=>{
         const label=format==='of'?`${i+1} / ${total}`:format==='dash'?`- ${i+1} -`:String(i+1);
@@ -697,7 +687,9 @@ footer{margin-top:1rem}
     finally{setBusy(btn,false);}
   });
 
-  $('protect-input').addEventListener('change',e=>{protectFile=e.target.files[0]\vert{}\vert{}null;if(!protectFile)return;$('protect-info').textContent=`선택한 파일: ${protectFile.name}`;$('protect-controls').classList.remove('hidden');});$('apply-pdf-protection').addEventListener('click',async e=>{
+  // 7. Password protection (AES-256) via pdf-lib-encrypt. External module is loaded only when requested.
+  $('protect-input').addEventListener('change',e=>{protectFile=e.target.files[0]||null;if(!protectFile)return;$('protect-info').textContent=`선택한 파일: ${protectFile.name}`;$('protect-controls').classList.remove('hidden');});
+  $('apply-pdf-protection').addEventListener('click',async e=>{
     const btn=e.currentTarget;if(!protectFile){status('먼저 PDF를 선택해 주세요.',true);return;}
     const password=$('protect-password').value,confirmPassword=$('protect-password-confirm').value;
     if(password.length<8){status('비밀번호는 8자 이상으로 입력해 주세요.',true);return;}
@@ -717,6 +709,7 @@ footer{margin-top:1rem}
     finally{setBusy(btn,false);}
   });
 
+  // 8. Split PDF by ranges
   $('split-input').addEventListener('change',async e=>{
     splitFile=e.target.files[0];if(!splitFile)return;
     try{
@@ -726,7 +719,8 @@ footer{margin-top:1rem}
       status('페이지 범위를 입력해 분할할 수 있어요.');
     }catch(err){status('PDF를 열지 못했어요: '+err.message,true);}
   });
-  $('clear-split').addEventListener('click',()=>{splitFile=null;splitPageCount=0;$('split-input').value='';$('split-controls').classList.add('hidden');clearStatus();});$('split-pdf').addEventListener('click',async e=>{
+  $('clear-split').addEventListener('click',()=>{splitFile=null;splitPageCount=0;$('split-input').value='';$('split-controls').classList.add('hidden');clearStatus();});
+  $('split-pdf').addEventListener('click',async e=>{
     const btn=e.currentTarget;if(!splitFile)return;
     const raw=$('split-ranges').value.trim();
     if(!raw){status('페이지 범위를 입력해 주세요.',true);return;}
@@ -754,6 +748,97 @@ footer{margin-top:1rem}
     finally{setBusy(btn,false);}
   });
 
+  // 9. Compare two PDFs side-by-side and compare extracted text by page.
+  let compareFileA=null, compareFileB=null, compareDocA=null, compareDocB=null, comparePage=1;
+  async function loadCompareDocs(){
+    if(!compareFileA||!compareFileB)return;
+    try{
+      status('PDF 두 개를 여는 중...');
+      compareDocA=await pdfjsLib.getDocument({data:await compareFileA.arrayBuffer()}).promise;
+      compareDocB=await pdfjsLib.getDocument({data:await compareFileB.arrayBuffer()}).promise;
+      comparePage=1;$('compare-controls').classList.remove('hidden');
+      $('compare-page-label').textContent=`1페이지 · A ${compareDocA.numPages}페이지 / B ${compareDocB.numPages}페이지`;
+      await renderComparePage();status('두 PDF를 불러왔어요. 페이지를 이동하거나 현재 페이지 비교를 누르세요.');
+    }catch(err){status('PDF 비교 파일을 열지 못했어요: '+err.message,true);}
+  }
+  async function renderCompareCanvas(doc,pageNum,canvasId){
+    const canvas=$(canvasId),page=await doc.getPage(pageNum),viewport=page.getViewport({scale:1.1});
+    canvas.width=Math.ceil(viewport.width);canvas.height=Math.ceil(viewport.height);
+    await page.render({canvasContext:canvas.getContext('2d'),viewport}).promise;
+  }
+  async function extractCompareText(doc,pageNum){
+    if(pageNum>doc.numPages)return '';
+    const page=await doc.getPage(pageNum),content=await page.getTextContent();
+    return content.items.map(it=>it.str).join(' ').replace(/[\t ]+/g,' ').trim();
+  }
+  async function renderComparePage(){
+    if(!compareDocA||!compareDocB)return;
+    await renderCompareCanvas(compareDocA,Math.min(comparePage,compareDocA.numPages),'compare-canvas-a');
+    if(comparePage<=compareDocB.numPages)await renderCompareCanvas(compareDocB,comparePage,'compare-canvas-b');else{$('compare-canvas-b').getContext('2d').clearRect(0,0,$('compare-canvas-b').width,$('compare-canvas-b').height);}
+    $('compare-page-label').textContent=`${comparePage}페이지 · A ${compareDocA.numPages}페이지 / B ${compareDocB.numPages}페이지`;
+    $('compare-text-a').textContent=await extractCompareText(compareDocA,comparePage)||'(추출 가능한 텍스트 없음)';
+    $('compare-text-b').textContent=await extractCompareText(compareDocB,comparePage)||'(추출 가능한 텍스트 없음)';
+    $('compare-summary').textContent='현재 페이지를 비교하려면 “현재 페이지 비교”를 눌러 주세요.';
+  }
+  $('compare-file-a').addEventListener('change',e=>{compareFileA=e.target.files[0]||null;$('compare-name-a').textContent=compareFileA?compareFileA.name:'첫 번째 PDF 선택';if(compareFileA&&compareFileB)loadCompareDocs();});
+  $('compare-file-b').addEventListener('change',e=>{compareFileB=e.target.files[0]||null;$('compare-name-b').textContent=compareFileB?compareFileB.name:'두 번째 PDF 선택';if(compareFileA&&compareFileB)loadCompareDocs();});
+  $('compare-prev').addEventListener('click',async()=>{if(comparePage>1){comparePage--;await renderComparePage();}});
+  $('compare-next').addEventListener('click',async()=>{if(compareDocA&&compareDocB&&comparePage<Math.max(compareDocA.numPages,compareDocB.numPages)){comparePage++;await renderComparePage();}});
+  $('run-compare').addEventListener('click',async()=>{
+    if(!compareDocA||!compareDocB)return;
+    try{
+      const a=await extractCompareText(compareDocA,comparePage),b=await extractCompareText(compareDocB,comparePage);
+      if(!a&&!b){$('compare-summary').textContent='이 페이지에서 추출할 텍스트가 없어요. 스캔 이미지이거나 텍스트가 없는 페이지일 수 있습니다.';return;}
+      const norm=x=>x.split(/(?<=[.!?。！？])\s+|\n/).map(t=>t.trim()).filter(Boolean);
+      const aa=norm(a),bb=norm(b),setB=new Set(bb),setA=new Set(aa);
+      const removed=aa.filter(x=>!setB.has(x)),added=bb.filter(x=>!setA.has(x));
+      $('compare-text-a').innerHTML=aa.map(x=>`${setB.has(x)?'':'<span class="text-red-700 bg-red-50">'}${escapeCompareHtml(x)}${setB.has(x)?'':'</span>'}`).join('<br>')||'(텍스트 없음)';
+      $('compare-text-b').innerHTML=bb.map(x=>`${setA.has(x)?'':'<span class="text-green-700 bg-green-50">'}${escapeCompareHtml(x)}${setA.has(x)?'':'</span>'}`).join('<br>')||'(텍스트 없음)';
+      $('compare-summary').innerHTML=`<strong>${comparePage}페이지 비교 결과</strong><br>기존 버전에만 있는 문장: <strong class="text-red-700">${removed.length}개</strong><br>새 버전에만 있는 문장: <strong class="text-green-700">${added.length}개</strong>${removed.length?'<div class="mt-2 text-red-700"><b>기존에만 있음</b><br>'+removed.map(escapeCompareHtml).join('<br>')+'</div>':''}${added.length?'<div class="mt-2 text-green-700"><b>새 버전에만 있음</b><br>'+added.map(escapeCompareHtml).join('<br>')+'</div>':''}`;
+    }catch(err){status('비교 중 오류가 발생했어요: '+err.message,true);}
+  });
+  function escapeCompareHtml(value){return String(value).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));}
+
+  // 10. Crop PDF by selecting a rectangle on the first-page preview.
+  let cropFile=null,cropDocPreview=null,cropDragStart=null,cropRect=null,cropViewport=null;
+  $('crop-input').addEventListener('change',async e=>{
+    cropFile=e.target.files[0]||null;if(!cropFile)return;
+    try{
+      cropDocPreview=await pdfjsLib.getDocument({data:await cropFile.arrayBuffer()}).promise;
+      const page=await cropDocPreview.getPage(1);cropViewport=page.getViewport({scale:1.2});
+      const canvas=$('crop-canvas');canvas.width=Math.ceil(cropViewport.width);canvas.height=Math.ceil(cropViewport.height);
+      await page.render({canvasContext:canvas.getContext('2d'),viewport:cropViewport}).promise;
+      cropRect=null;$('crop-selection-label').textContent='미리 보기에서 드래그해 남길 영역을 선택하세요.';
+      $('crop-info').textContent=`${cropFile.name} · 총 ${cropDocPreview.numPages}페이지`;$('crop-controls').classList.remove('hidden');status('미리 보기에서 마우스로 드래그해 자를 영역을 지정하세요.');
+    }catch(err){status('PDF 미리 보기에 실패했어요: '+err.message,true);}
+  });
+  function cropPoint(ev){const c=$('crop-canvas'),r=c.getBoundingClientRect();return {x:Math.max(0,Math.min(c.width,(ev.clientX-r.left)*c.width/r.width)),y:Math.max(0,Math.min(c.height,(ev.clientY-r.top)*c.height/r.height))};}
+  function paintCropSelection(){
+    const c=$('crop-canvas'),ctx=c.getContext('2d');
+    // Re-rendered image is retained by overlay redraw; preserve a clean copy once after initial render.
+    if(!c._baseImage){const im=new ImageData(ctx.getImageData(0,0,c.width,c.height).data,c.width,c.height);c._baseImage=im;}
+    ctx.putImageData(c._baseImage,0,0);
+    if(cropRect){ctx.save();ctx.fillStyle='rgba(236,72,153,.18)';ctx.strokeStyle='#db2777';ctx.lineWidth=3;ctx.setLineDash([7,4]);ctx.fillRect(cropRect.x,cropRect.y,cropRect.w,cropRect.h);ctx.strokeRect(cropRect.x,cropRect.y,cropRect.w,cropRect.h);ctx.restore();$('crop-selection-label').textContent=`선택 영역: ${Math.round(cropRect.w)} × ${Math.round(cropRect.h)} px`;}
+  }
+  $('crop-canvas').addEventListener('pointerdown',ev=>{if(!cropViewport)return;const p=cropPoint(ev);cropDragStart=p;cropRect={x:p.x,y:p.y,w:0,h:0};$('crop-canvas').setPointerCapture?.(ev.pointerId);paintCropSelection();});
+  $('crop-canvas').addEventListener('pointermove',ev=>{if(!cropDragStart)return;const p=cropPoint(ev);cropRect={x:Math.min(p.x,cropDragStart.x),y:Math.min(p.y,cropDragStart.y),w:Math.abs(p.x-cropDragStart.x),h:Math.abs(p.y-cropDragStart.y)};paintCropSelection();});
+  $('crop-canvas').addEventListener('pointerup',()=>{cropDragStart=null;});
+  $('crop-reset').addEventListener('click',()=>{cropRect=null;if($('crop-canvas')._baseImage){const c=$('crop-canvas');c.getContext('2d').putImageData(c._baseImage,0,0);delete c._baseImage;}$('crop-selection-label').textContent='미리 보기에서 드래그해 남길 영역을 선택하세요.';});
+  $('apply-crop').addEventListener('click',async e=>{
+    const btn=e.currentTarget;if(!cropFile||!cropRect||cropRect.w<8||cropRect.h<8){status('미리 보기에서 자를 영역을 먼저 드래그해 선택해 주세요.',true);return;}
+    setBusy(btn,true,'PDF 자르는 중...');
+    try{
+      const doc=await PDFLib.PDFDocument.load(await cropFile.arrayBuffer()),pages=doc.getPages();
+      const scope=$('crop-scope').value,previewW=$('crop-canvas').width,previewH=$('crop-canvas').height;
+      const nx=cropRect.x/previewW,ny=cropRect.y/previewH,nw=cropRect.w/previewW,nh=cropRect.h/previewH;
+      const targets=scope==='first'?[pages[0]]:pages;
+      targets.forEach(page=>{const {width,height}=page.getSize();const x=nx*width,top=ny*height,w=nw*width,h=nh*height;page.setCropBox(x,Math.max(0,height-top-h),Math.min(w,width-x),Math.min(h,height-(height-top-h)));});
+      downloadBytes(await doc.save(),`${outputName('output-name-pdf-crop','잘라낸_PDF')}.pdf`);status(scope==='first'?'첫 페이지의 표시 영역을 잘라 저장했어요.':'모든 페이지에 선택 영역 비율을 적용해 저장했어요.');
+    }catch(err){console.error(err);status('PDF 자르기에 실패했어요: '+err.message,true);}
+    finally{setBusy(btn,false);}
+  });
+
+  // Report missing CDN dependencies in a user-friendly way.
   window.addEventListener('error', e => {
     if (e.message && /pdfjsLib|PDFLib|JSZip|Sortable|jspdf/i.test(e.message)) {
       status('필요한 라이브러리를 불러오지 못했어요. 인터넷 연결을 확인한 뒤 페이지를 새로고침해 주세요.',true);
